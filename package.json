@@ -1,0 +1,53 @@
+{
+  "name": "todoapp",
+  "version": "1.0.0",
+  "description": "Todo List Application that Allows only those who are authenticated",
+  "main": "server.js",
+  "scripts": {
+    "test": "nodemon server",
+    "dev": "npm run development",
+    "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "watch": "npm run development -- --watch",
+    "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "prod": "npm run production",
+    "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SteveNyanumba/vue-todo.git"
+  },
+  "keywords": [
+    "Vue",
+    "vuex",
+    "todos",
+    "bootstrap",
+    "express",
+    "vue-auth"
+  ],
+  "author": "Steve Nyanumba",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SteveNyanumba/vue-todo/issues"
+  },
+  "homepage": "https://github.com/SteveNyanumba/vue-todo#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "body-parser": "^1.19.0",
+    "bootstrap": "^4.5.0",
+    "cookie-parser": "^1.4.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "laravel-mix": "^5.0.4",
+    "morgan": "^1.10.0",
+    "pg": "^8.3.0",
+    "sequelize": "^6.3.3"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.2",
+    "resolve-url-loader": "^3.1.0",
+    "sass": "^1.26.10",
+    "sass-loader": "^8.0.2",
+    "vue-template-compiler": "^2.6.11"
+  }
+}
