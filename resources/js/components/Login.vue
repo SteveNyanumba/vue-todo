@@ -8,7 +8,7 @@
 
       <form @submit.prevent="">
         <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="Username" v-model="username">
+          <input type="text" class="form-control" placeholder="Username" name="password" v-model="username">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-user"></span>
@@ -16,7 +16,7 @@
           </div>
         </div>
         <div class="input-group mb-3">
-          <input type="password" class="form-control" placeholder="Password" v-model="password">
+          <input type="password" class="form-control" placeholder="Password" name="password" v-model="password">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock"></span>
@@ -64,15 +64,10 @@ methods:{
     let username = this.username
     let password = this.password
     this.$store.dispatch('login',{username, password})
-        .then(() => {
-          this.$router.push('/todos')
-        }).catch((err) => {
-          console.log(err)
-        });
   },
 
 },
-computed: mapGetters(['isLoggedIn']),
+computed: mapGetters(["isloggedIn"]),
 }
 </script>
 

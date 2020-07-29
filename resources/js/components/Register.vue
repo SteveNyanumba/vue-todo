@@ -80,14 +80,8 @@ methods:{
       confirmPassword: this.confirmPassword
     }
     this.$store.dispatch('register', user)
-        .then((res) => {
-          this.$router.push('/login')
-        }).catch((err) => {
-          console.log(err)
-        });
-  }
+  },
 }
-
 }
 </script>
 

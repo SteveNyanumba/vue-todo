@@ -27,9 +27,6 @@ const routes = [
         path:'/register',
         component:require('./components/Register.vue').default
     },
-    {
-        path: '*'
-    }
 ]
 const router = new VueRouter({
     mode:'history',
@@ -37,18 +34,20 @@ const router = new VueRouter({
     
 })
 
-router.beforeEach((to, from, next)=>{
-    if(to.matched.some(rec=> rec.meta.requiresAuth)){
-        if (store.getters.isLoggedIn){
-            next()
-        }else{
-            next('/login')
-        }
+
+
+// router.beforeEach((to, from, next)=>{
+//     if(to.matched.some(rec=> rec.meta.requiresAuth)){
+//         if (store.getters.isLoggedIn){
+//             next()
+//         }else{
+//             next('/login')
+//         }
         
-    }else{
-        next()
-    }
-})
+//     }else{
+//         next()
+//     }
+// })
 
 const app = new Vue({
     el:'#app',

@@ -19,13 +19,20 @@
                         <div class="container-fluid">
                              <form @submit.prevent="onSubmit">
                                 <div class="form-group">
-                                     <input type="text" v-model="title" placeholder="Todo Title" class="form-control">
+                                     <input name="title" type="text" v-model="newTodo.title" placeholder="Todo Title" class="form-control">
                                 </div>
                                  <div class="form-group">
-                                     <textarea class="form-control" v-model="description" placeholder="Here lies your description"></textarea>
+                                     <textarea name="description" class="form-control" v-model="newTodo.description" placeholder="Here lies your description"></textarea>
                                  </div>
                                  <div class="form-group">
-                                     <input class="form-control" type="date" v-model="deadline" placeholder="Enter your deadline date">
+                                     <input name="date" class="form-control" type="date" v-model="newTodo.deadline" placeholder="Enter your deadline date">
+                                 </div>
+                                 <div class="form-group">
+                                     <select name="priority" class="form-control" v-model="newTodo.priority" >
+                                         <option value="low">Low</option>
+                                         <option value="medium">Medium</option>
+                                         <option value="high">High</option>
+                                     </select>
                                  </div>
                                  <input type="submit" class="btn btn-primary" value="Submit">
                              </form>
@@ -49,6 +56,7 @@ export default {
                 title:'',
                 description:'',
                 deadline:'',
+                priority:''
             }
         }
     },
@@ -57,6 +65,7 @@ export default {
 
         onSubmit(){
             this.addTodo(this.newTodo)
+            $('#newTodo').modal('hide')
         }
     }
 }

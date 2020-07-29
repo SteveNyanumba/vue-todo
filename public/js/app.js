@@ -7381,21 +7381,15 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     login: function login() {
-      var _this = this;
-
       var username = this.username;
       var password = this.password;
       this.$store.dispatch('login', {
         username: username,
         password: password
-      }).then(function () {
-        _this.$router.push('/todos');
-      })["catch"](function (err) {
-        console.log(err);
       });
     }
   },
-  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(['isLoggedIn'])
+  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["isloggedIn"])
 });
 
 /***/ }),
@@ -7484,19 +7478,13 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     register: function register() {
-      var _this = this;
-
       var user = {
         name: this.name,
         email: this.email,
         password: this.password,
         confirmPassword: this.confirmPassword
       };
-      this.$store.dispatch('register', user).then(function (res) {
-        _this.$router.push('/login');
-      })["catch"](function (err) {
-        console.log(err);
-      });
+      this.$store.dispatch('register', user);
     }
   }
 });
@@ -7557,10 +7545,18 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     Navbar: _sub_Navbar__WEBPACK_IMPORTED_MODULE_0__["default"],
     AddTodo: _sub_AddTodo__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
+  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapGetters"])(["allTodos"]),
   data: function data() {
-    return {};
+    return {
+      todo: {
+        id: '',
+        title: '',
+        description: '',
+        deadline: '',
+        userId: ''
+      }
+    };
   },
-  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapGetters"])(['allTodos']),
   methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapActions"])(["fetchTodos", "deleteTodo", "updateTodo"])), {}, {
     on2Click: function on2Click(todo) {
       var updateTodo = {
@@ -7631,6 +7627,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'AddTodo',
@@ -7642,13 +7645,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       newTodo: {
         title: '',
         description: '',
-        deadline: ''
+        deadline: '',
+        priority: ''
       }
     };
   },
   methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(['addTodo'])), {}, {
     onSubmit: function onSubmit() {
       this.addTodo(this.newTodo);
+      $('#newTodo').modal('hide');
     }
   })
 });
@@ -47334,7 +47339,11 @@ var render = function() {
                       }
                     ],
                     staticClass: "form-control",
-                    attrs: { type: "text", placeholder: "Username" },
+                    attrs: {
+                      type: "text",
+                      placeholder: "Username",
+                      name: "password"
+                    },
                     domProps: { value: _vm.username },
                     on: {
                       input: function($event) {
@@ -47360,7 +47369,11 @@ var render = function() {
                       }
                     ],
                     staticClass: "form-control",
-                    attrs: { type: "password", placeholder: "Password" },
+                    attrs: {
+                      type: "password",
+                      placeholder: "Password",
+                      name: "password"
+                    },
                     domProps: { value: _vm.password },
                     on: {
                       input: function($event) {
@@ -47704,48 +47717,43 @@ var render = function() {
       _c("div", { staticClass: "container my-5", attrs: { id: "getTodos" } }, [
         _c("div", { staticClass: "row d-flex justify-content-center" }, [
           _c("div", { staticClass: "col-lg-12" }, [
-            _c(
-              "div",
-              { staticClass: "card px-3" },
-              [
-                _c("card-body", [
-                  _c("h4", { staticClass: "card-title text-center" }, [
-                    _vm._v("Todo App")
-                  ]),
-                  _vm._v(" "),
-                  _c(
-                    "ul",
-                    { staticClass: "list-group mb-3" },
-                    _vm._l(_vm.AllTodos, function(todo) {
-                      return _c(
-                        "li",
-                        {
-                          key: todo.id,
-                          staticClass:
-                            "list-group-item d-flex justify-content-between align-items-center",
-                          class: { active: todo.completed },
-                          on: { dblclick: _vm.on2Click }
-                        },
-                        [
-                          _vm._v(
-                            "\n                              " +
-                              _vm._s(todo.title) +
-                              "\n                              "
-                          ),
-                          _c(
-                            "span",
-                            { staticClass: "badge badge-light badge-pill" },
-                            [_vm._v(_vm._s(todo.deadline))]
-                          )
-                        ]
-                      )
-                    }),
-                    0
-                  )
-                ])
-              ],
-              1
-            )
+            _c("div", { staticClass: "card px-3" }, [
+              _c("div", { staticClass: "card-body" }, [
+                _c("h4", { staticClass: "card-title text-center" }, [
+                  _vm._v("Todo App")
+                ]),
+                _vm._v(" "),
+                _c(
+                  "ul",
+                  { staticClass: "list-group mb-3" },
+                  _vm._l(_vm.allTodos, function(todo) {
+                    return _c(
+                      "li",
+                      {
+                        key: todo.id,
+                        staticClass:
+                          "list-group-item d-flex justify-content-between align-items-center",
+                        class: { active: todo.completed },
+                        on: { dblclick: _vm.on2Click }
+                      },
+                      [
+                        _vm._v(
+                          "\n                              " +
+                            _vm._s(todo.title) +
+                            "\n                              "
+                        ),
+                        _c(
+                          "span",
+                          { staticClass: "badge badge-light badge-pill" },
+                          [_vm._v(_vm._s(todo.deadline))]
+                        )
+                      ]
+                    )
+                  }),
+                  0
+                )
+              ])
+            ])
           ])
         ])
       ]),
@@ -47830,19 +47838,27 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.title,
-                              expression: "title"
+                              value: _vm.newTodo.title,
+                              expression: "newTodo.title"
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: { type: "text", placeholder: "Todo Title" },
-                          domProps: { value: _vm.title },
+                          attrs: {
+                            name: "title",
+                            type: "text",
+                            placeholder: "Todo Title"
+                          },
+                          domProps: { value: _vm.newTodo.title },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
                               }
-                              _vm.title = $event.target.value
+                              _vm.$set(
+                                _vm.newTodo,
+                                "title",
+                                $event.target.value
+                              )
                             }
                           }
                         })
@@ -47854,19 +47870,26 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.description,
-                              expression: "description"
+                              value: _vm.newTodo.description,
+                              expression: "newTodo.description"
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: { placeholder: "Here lies your description" },
-                          domProps: { value: _vm.description },
+                          attrs: {
+                            name: "description",
+                            placeholder: "Here lies your description"
+                          },
+                          domProps: { value: _vm.newTodo.description },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
                               }
-                              _vm.description = $event.target.value
+                              _vm.$set(
+                                _vm.newTodo,
+                                "description",
+                                $event.target.value
+                              )
                             }
                           }
                         })
@@ -47878,25 +47901,80 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.deadline,
-                              expression: "deadline"
+                              value: _vm.newTodo.deadline,
+                              expression: "newTodo.deadline"
                             }
                           ],
                           staticClass: "form-control",
                           attrs: {
+                            name: "date",
                             type: "date",
                             placeholder: "Enter your deadline date"
                           },
-                          domProps: { value: _vm.deadline },
+                          domProps: { value: _vm.newTodo.deadline },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
                               }
-                              _vm.deadline = $event.target.value
+                              _vm.$set(
+                                _vm.newTodo,
+                                "deadline",
+                                $event.target.value
+                              )
                             }
                           }
                         })
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "form-group" }, [
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.newTodo.priority,
+                                expression: "newTodo.priority"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { name: "priority" },
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.$set(
+                                  _vm.newTodo,
+                                  "priority",
+                                  $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                )
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { value: "low" } }, [
+                              _vm._v("Low")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "medium" } }, [
+                              _vm._v("Medium")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "high" } }, [
+                              _vm._v("High")
+                            ])
+                          ]
+                        )
                       ]),
                       _vm._v(" "),
                       _c("input", {
@@ -64518,26 +64596,22 @@ var routes = [{
 }, {
   path: '/register',
   component: __webpack_require__(/*! ./components/Register.vue */ "./resources/js/components/Register.vue")["default"]
-}, {
-  path: '*'
 }];
 var router = new VueRouter({
   mode: 'history',
   routes: routes
-});
-router.beforeEach(function (to, from, next) {
-  if (to.matched.some(function (rec) {
-    return rec.meta.requiresAuth;
-  })) {
-    if (store.getters.isLoggedIn) {
-      next();
-    } else {
-      next('/login');
-    }
-  } else {
-    next();
-  }
-});
+}); // router.beforeEach((to, from, next)=>{
+//     if(to.matched.some(rec=> rec.meta.requiresAuth)){
+//         if (store.getters.isLoggedIn){
+//             next()
+//         }else{
+//             next('/login')
+//         }
+//     }else{
+//         next()
+//     }
+// })
+
 var app = new Vue({
   el: '#app',
   router: router,
@@ -64998,54 +65072,178 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 
 var state = {
   status: '',
   user: {},
-  cookie: ''
+  cookie: document.cookie
 };
 var actions = {
   login: function login(_ref, user) {
-    var commit = _ref.commit;
-    commit('authRequest');
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/login', {
-      username: user.username,
-      password: user.password
-    }).then(function (res) {
-      if (res.data.success) {
-        console.log(res.data);
-        var cookie = res.cookies.user_sid;
-        var _user = req.session.user;
-        axios__WEBPACK_IMPORTED_MODULE_0___default.a.defaults.headers.common['Authorization'] = cookie;
-        commit('authSuccess', cookie, _user);
-      } else {
-        Toast.fire({
-          icon: 'error',
-          title: res.data.message
-        });
-        commit('authErr');
-      }
-    })["catch"](function (err) {
-      commit('authErr');
-      console.log(err);
-    });
+    var _this = this;
+
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+      var commit, response, cookie;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              commit = _ref.commit;
+              _context.prev = 1;
+              commit('authRequest');
+
+              if (!(!user.username || !user.password)) {
+                _context.next = 6;
+                break;
+              }
+
+              Toast.fire({
+                icon: 'error',
+                title: 'You have empty fields!'
+              });
+              return _context.abrupt("return");
+
+            case 6:
+              _context.next = 8;
+              return axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/api/login', user);
+
+            case 8:
+              response = _context.sent;
+
+              if (response.data.success) {
+                cookie = document.cookie;
+
+                _this.$router.push('/login');
+
+                Toast.fire({
+                  icon: 'success',
+                  title: response.data.message
+                });
+                commit('authSuccess', cookie, user);
+              } else {
+                Toast.fire({
+                  icon: 'warning',
+                  title: response.data.message
+                });
+              }
+
+              _context.next = 16;
+              break;
+
+            case 12:
+              _context.prev = 12;
+              _context.t0 = _context["catch"](1);
+              commit('authErr');
+              Toast.fire({
+                icon: 'error',
+                title: _context.t0
+              });
+
+            case 16:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee, null, [[1, 12]]);
+    }))();
   },
+  // commit('authRequest')
+  // if(!user.username || !user.password){
+  //     Toast.fire({
+  //         icon:'error',
+  //         title: 'Empty Fields'
+  //     })
+  //     return
+  // }
+  // Axios.post('/api/login', user)
+  // .then((res) => {
+  //     if (res.data.success){
+  //         user = res.data.user
+  //         console.log(res)
+  //     }else{
+  //         console.log(res)
+  //     }
   register: function register(_ref2, user) {
-    var commit = _ref2.commit;
-    commit('authRequest');
-    axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/register', user).then(function (res) {
-      console.log(res);
-    })["catch"](function (err) {
-      commit('authErr');
-      console.log(err);
-    });
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+      var commit, response;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              commit = _ref2.commit;
+              _context2.prev = 1;
+              _context2.next = 4;
+              return axios.post('/api/register', user).then(function (res) {
+                Toast.fire({
+                  icon: 'success',
+                  title: res.data.message
+                });
+              })["catch"](function (err) {
+                commit('authErr');
+                console.log(err);
+              });
+
+            case 4:
+              response = _context2.sent;
+              commit('authRequest');
+              _context2.next = 11;
+              break;
+
+            case 8:
+              _context2.prev = 8;
+              _context2.t0 = _context2["catch"](1);
+              Toast.fire({
+                icon: 'error',
+                title: _context2.t0
+              });
+
+            case 11:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2, null, [[1, 8]]);
+    }))();
   },
   logout: function logout(_ref3) {
-    var commit = _ref3.commit;
-    commit('logout');
-    delete axios__WEBPACK_IMPORTED_MODULE_0___default.a.defaults.headers.common['Authorization'];
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+      var commit, response;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              commit = _ref3.commit;
+              _context3.prev = 1;
+              _context3.next = 4;
+              return delete axios.defaults.headers.common['Authorization'];
+
+            case 4:
+              response = _context3.sent;
+              commit('logout');
+              _context3.next = 10;
+              break;
+
+            case 8:
+              _context3.prev = 8;
+              _context3.t0 = _context3["catch"](1);
+
+            case 10:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3, null, [[1, 8]]);
+    }))();
   }
 };
 var getters = {
@@ -65112,94 +65310,125 @@ var getters = {
 var actions = {
   fetchTodos: function fetchTodos(_ref) {
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-      var commit, response;
+      var commit, _response;
+
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
               commit = _ref.commit;
-              _context.next = 3;
+              _context.prev = 1;
+              _context.next = 4;
               return axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/api/todos');
 
-            case 3:
-              response = _context.sent;
-              commit('setTodos', response.data);
+            case 4:
+              _response = _context.sent;
+              console.log(_response);
+              commit('setTodos', _response.data);
+              _context.next = 12;
+              break;
 
-            case 5:
+            case 9:
+              _context.prev = 9;
+              _context.t0 = _context["catch"](1);
+              console.log(_context.t0);
+
+            case 12:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee);
+      }, _callee, null, [[1, 9]]);
     }))();
   },
   addTodo: function addTodo(_ref2, todo) {
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
-      var commit, response;
+      var commit, _response2;
+
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
               commit = _ref2.commit;
-              _context2.next = 3;
+              _context2.prev = 1;
+              _context2.next = 4;
               return axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/api/todos', todo);
 
-            case 3:
-              response = _context2.sent;
+            case 4:
+              _response2 = _context2.sent;
+
+              if (_response2.data.success) {
+                Toast.fire({
+                  icon: 'success',
+                  title: _response2.data.message
+                });
+              } else {
+                Toast.fire({
+                  icon: 'question',
+                  title: _response2.data.message
+                });
+              }
+
+              commit('newTodo', todo);
+              _context2.next = 12;
+              break;
+
+            case 9:
+              _context2.prev = 9;
+              _context2.t0 = _context2["catch"](1);
+              Toast.fire({
+                icon: 'error',
+                title: _context2.t0
+              });
+
+            case 12:
               commit('newTodo', response.data);
 
-            case 5:
+            case 13:
             case "end":
               return _context2.stop();
           }
         }
-      }, _callee2);
+      }, _callee2, null, [[1, 9]]);
     }))();
   },
   deleteTodo: function deleteTodo(_ref3, id) {
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
-      var commit;
+      var commit, _response3;
+
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
         while (1) {
           switch (_context3.prev = _context3.next) {
             case 0:
               commit = _ref3.commit;
-              _context3.next = 3;
+              _context3.prev = 1;
+              _context3.next = 4;
               return axios__WEBPACK_IMPORTED_MODULE_1___default.a["delete"]("/api/todos/".concat(id));
 
-            case 3:
-              commit('removeTodo', id);
-
             case 4:
+              _response3 = _context3.sent;
+              Toast.fire({
+                icon: 'success',
+                message: _response3.data.message
+              });
+              commit('removeTodo', id);
+              _context3.next = 12;
+              break;
+
+            case 9:
+              _context3.prev = 9;
+              _context3.t0 = _context3["catch"](1);
+              Toast.fire({
+                icon: 'error',
+                title: _context3.t0
+              });
+
+            case 12:
             case "end":
               return _context3.stop();
           }
         }
-      }, _callee3);
-    }))();
-  },
-  updateTodo: function updateTodo(_ref4, _updateTodo) {
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
-      var commit, response;
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
-        while (1) {
-          switch (_context4.prev = _context4.next) {
-            case 0:
-              commit = _ref4.commit;
-              _context4.next = 3;
-              return axios__WEBPACK_IMPORTED_MODULE_1___default.a.put("/api/todos/".concat(_updateTodo.id), _updateTodo);
-
-            case 3:
-              response = _context4.sent;
-              console.log(response.data);
-              commit('updateTodo', response.data);
-
-            case 6:
-            case "end":
-              return _context4.stop();
-          }
-        }
-      }, _callee4);
+      }, _callee3, null, [[1, 9]]);
     }))();
   }
 };
@@ -65214,15 +65443,6 @@ var mutations = {
     state.todos = state.todos.filter(function (todo) {
       return todo.id !== id;
     });
-  },
-  updateTodo: function updateTodo(state, _updateTodo2) {
-    var index = state.todos.findIndex(function (todo) {
-      return todo.id === _updateTodo2.id;
-    });
-
-    if (index !== -1) {
-      state.todos.splice(index, 1, _updateTodo2);
-    }
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -65256,6 +65476,7 @@ __webpack_require__.r(__webpack_exports__);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]); // Create store
 
 /* harmony default export */ __webpack_exports__["default"] = (new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
+  strict: true,
   modules: {
     todos: _modules_todos__WEBPACK_IMPORTED_MODULE_3__["default"],
     auth: _modules_auth__WEBPACK_IMPORTED_MODULE_2__["default"]

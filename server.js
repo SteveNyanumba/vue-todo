@@ -8,6 +8,7 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
 const history  = require('connect-history-api-fallback')
+// const passport = require('passport')
 
 dotenv.config({
     path:'./.env'
@@ -30,6 +31,8 @@ app.use(session({
         expires: 300000
     }
 }))
+// app.use(passport.initialize())
+// app.use(passport.session())
 
 //clear cookies if session expires
 app.use((req, res, next) => {
@@ -39,11 +42,11 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(history())
+app.use('/api',apiRoutes)
 
+app.use(history())
 app.use(express.static('./public'))
 
-app.use('/api',apiRoutes)
 // app.use('/',webRoutes)
 
 
