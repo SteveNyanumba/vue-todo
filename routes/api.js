@@ -1,11 +1,18 @@
 const User = require('../app/User')
 const Todo = require('../app/Todo')
 const router = require('express').Router()
+const dotenv = require('dotenv')
+const jwt = require('jsonwebtoken')
+
+dotenv.config({
+    path:'../.env'
+})
+
 
 //Authentication middleware
 const auth = (req,res,next)=>{
-    if(!req.session.user && !req.cookies.user_sid){
-        res.redirect('/login').status(301).json({message:'You must log in first!'})
+    if(!req.headers.authorization){
+        return res.status(301).json({message:'You must log in first!'})
     }else{
         next()
     }
@@ -15,6 +22,7 @@ const auth = (req,res,next)=>{
 // Login as Existing User
 router.post('/login', async (req,res)=>{
     try {
+        const {APP_SECRET} = process.env
         const {username, password} = req.body
         const userExists = await User.findOne({where:{username}})
         if(userExists === null){
@@ -27,12 +35,14 @@ router.post('/login', async (req,res)=>{
             })
         }
         
-
-        req.session.user = userExists.dataValues
+        let token = jwt.sign(userExists.dataValues, APP_SECRET,{
+            expiresIn: 600
+        })
+        // localStorage.setItem('token',token)
         res.status(200).json({
             success:true,
             message:'Successfully logged in!',
-            user:userExists.dataValues
+            token
         })
     } catch (err) {
         res.json({message:err}).status(500)
@@ -69,10 +79,11 @@ router.post('/register', (req,res)=>{
             password:req.body.password
         })
         .then((user)=>{
-            req.session.user= user.dataValues
+            let token = jwt.sign(user)
             res.status(200).json({
                 success:'true',
-                message:'Successfully Registered!'
+                message:'Successfully Registered!',
+                token
             })
             
         })
@@ -86,7 +97,8 @@ router.post('/register', (req,res)=>{
 //Get the Todos belonging to the User
 router.get('/todos', auth, async(req,res)=>{
     try {
-        const user = req.session.user
+        const {APP_SECRET} = process.env
+        const user = jwt.verify(req.headers['authorization'], APP_SECRET )
         const userTodos = await Todo.findAll({
             where: {userId: user.id}
         })
@@ -105,7 +117,9 @@ router.get('/todos', auth, async(req,res)=>{
 // Post a new Todo Item
 router.post('/todos',auth, async(req,res)=>{
     try {
-        const {user} = req.session
+        const {APP_SECRET} = process.env
+        let token = req.headers['authorization']
+        const user = await jwt.verify(token, APP_SECRET)
         const {title, description, deadline} = req.body
         const todo = await Todo.create({
             title,
@@ -113,7 +127,7 @@ router.post('/todos',auth, async(req,res)=>{
             deadline,
             userId:user.id
         })
-        res.json({success:true, message:'Successfully added a new Todo!'})
+        res.json({success:true, message:'Successfully added a new Todo!', todo})
     } catch (err) {
         res.json({message:err}).status(400)
     }

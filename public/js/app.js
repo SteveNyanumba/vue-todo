@@ -7381,11 +7381,17 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     login: function login() {
+      var _this = this;
+
       var username = this.username;
       var password = this.password;
       this.$store.dispatch('login', {
         username: username,
         password: password
+      }).then(function () {
+        _this.$router.push('/login');
+      })["catch"](function (err) {
+        console.log(err);
       });
     }
   },
@@ -64600,18 +64606,20 @@ var routes = [{
 var router = new VueRouter({
   mode: 'history',
   routes: routes
-}); // router.beforeEach((to, from, next)=>{
-//     if(to.matched.some(rec=> rec.meta.requiresAuth)){
-//         if (store.getters.isLoggedIn){
-//             next()
-//         }else{
-//             next('/login')
-//         }
-//     }else{
-//         next()
-//     }
-// })
-
+});
+router.beforeEach(function (to, from, next) {
+  if (to.matched.some(function (rec) {
+    return rec.meta.requiresAuth;
+  })) {
+    if (store.getters.isLoggedIn) {
+      next();
+    } else {
+      next('/login');
+    }
+  } else {
+    next();
+  }
+});
 var app = new Vue({
   el: '#app',
   router: router,
@@ -65086,14 +65094,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 var state = {
   status: '',
   user: {},
-  cookie: document.cookie
+  token: localStorage.getItem('token') || ''
 };
 var actions = {
   login: function login(_ref, user) {
-    var _this = this;
-
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-      var commit, response, cookie;
+      var commit, response, token;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -65121,15 +65127,12 @@ var actions = {
               response = _context.sent;
 
               if (response.data.success) {
-                cookie = document.cookie;
-
-                _this.$router.push('/login');
-
+                token = response.data.token;
                 Toast.fire({
                   icon: 'success',
                   title: response.data.message
                 });
-                commit('authSuccess', cookie, user);
+                commit('authSuccess', token, user);
               } else {
                 Toast.fire({
                   icon: 'warning',
@@ -65157,22 +65160,6 @@ var actions = {
       }, _callee, null, [[1, 12]]);
     }))();
   },
-  // commit('authRequest')
-  // if(!user.username || !user.password){
-  //     Toast.fire({
-  //         icon:'error',
-  //         title: 'Empty Fields'
-  //     })
-  //     return
-  // }
-  // Axios.post('/api/login', user)
-  // .then((res) => {
-  //     if (res.data.success){
-  //         user = res.data.user
-  //         console.log(res)
-  //     }else{
-  //         console.log(res)
-  //     }
   register: function register(_ref2, user) {
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
       var commit, response;
@@ -65248,7 +65235,7 @@ var actions = {
 };
 var getters = {
   isloggedIn: function isloggedIn(state) {
-    return !!state.cookie;
+    return !!state.token;
   },
   authStatus: function authStatus(state) {
     return state.status;
@@ -65258,16 +65245,16 @@ var mutations = {
   authRequest: function authRequest(state) {
     state.status = 'loading';
   },
-  authSuccess: function authSuccess(state, cookie, user) {
+  authSuccess: function authSuccess(state, token, user) {
     state.status = 'success';
-    state.cookie = cookie;
+    state.token = token;
     state.user = user;
   },
   authErr: function authErr(state) {
     state.status = 'error';
   },
   logout: function logout(state) {
-    state.status = '', state.cookie = '';
+    state.status = '', state.token = '';
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = ({

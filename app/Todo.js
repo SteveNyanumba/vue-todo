@@ -17,6 +17,11 @@ const Todo = sequelize.define('todos', {
         allowNull:false,
 
     },
+    priority:{
+        type:STRING,
+        allowNull:false,
+
+    },
     description:{
         type:TEXT,
         allowNull:false,

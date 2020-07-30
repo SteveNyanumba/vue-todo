@@ -3,38 +3,30 @@ const app = express()
 const dotenv = require('dotenv')
 const morgan = require('morgan')
 const apiRoutes = require('./routes/api')
-// const webRoutes = require('./routes/web')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
-const session = require('express-session')
 const history  = require('connect-history-api-fallback')
+
+// const session = require('express-session')
+// const webRoutes = require('./routes/web')
 // const passport = require('passport')
 
 dotenv.config({
     path:'./.env'
 })
-const {PORT, NODE_ENV, APP_SECRET} = process.env
+const {PORT, NODE_ENV} = process.env
 if(NODE_ENV === 'development'){
     morgan('dev')
 }
 
 app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended: false}))
 
 app.use(cookieParser())
 
-app.use(session({
-    key:'user_sid',
-    secret: APP_SECRET,
-    resave:false,
-    saveUninitialized: false,
-    cookie:{
-        expires: 300000
-    }
-}))
-// app.use(passport.initialize())
-// app.use(passport.session())
+app.use(passport.initialize());
 
-//clear cookies if session expires
+
 app.use((req, res, next) => {
     if (req.cookies.user_sid && !req.session.user) {
         res.clearCookie('user_sid');        
@@ -47,7 +39,7 @@ app.use('/api',apiRoutes)
 app.use(history())
 app.use(express.static('./public'))
 
-// app.use('/',webRoutes)
+
 
 
 

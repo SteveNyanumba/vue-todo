@@ -64,6 +64,11 @@ methods:{
     let username = this.username
     let password = this.password
     this.$store.dispatch('login',{username, password})
+    .then(() => {
+      this.$router.push('/login')
+    }).catch((err) => {
+      console.log(err)
+    });
   },
 
 },

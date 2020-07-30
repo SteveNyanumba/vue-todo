@@ -36,18 +36,18 @@ const router = new VueRouter({
 
 
 
-// router.beforeEach((to, from, next)=>{
-//     if(to.matched.some(rec=> rec.meta.requiresAuth)){
-//         if (store.getters.isLoggedIn){
-//             next()
-//         }else{
-//             next('/login')
-//         }
+router.beforeEach((to, from, next)=>{
+    if(to.matched.some(rec=> rec.meta.requiresAuth)){
+        if (store.getters.isLoggedIn){
+            next()
+        }else{
+            next('/login')
+        }
         
-//     }else{
-//         next()
-//     }
-// })
+    }else{
+        next()
+    }
+})
 
 const app = new Vue({
     el:'#app',

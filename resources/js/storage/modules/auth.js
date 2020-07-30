@@ -3,7 +3,7 @@ import Axios from "axios";
 const state = {
     status:'',
     user:{},
-    cookie: document.cookie
+    token: localStorage.getItem('token') || ''
 }
 const actions = {
     async login({commit}, user){
@@ -18,13 +18,12 @@ const actions = {
            }
            const response = await Axios.post('/api/login', user)
            if(response.data.success){
-               const cookie = document.cookie
-               this.$router.push('/login')
+               let token = response.data.token
                Toast.fire({
                    icon:'success',
                    title:response.data.message
                 })
-                commit('authSuccess', cookie, user)
+                commit('authSuccess', token, user)
            }else{
             Toast.fire({
                 icon:'warning',
@@ -41,30 +40,7 @@ const actions = {
        }
         
     },
-    // commit('authRequest')
-       
-    // if(!user.username || !user.password){
-    //     Toast.fire({
-    //         icon:'error',
-    //         title: 'Empty Fields'
-    //     })
-    //     return
-    // }
-    // Axios.post('/api/login', user)
-    // .then((res) => {
-    //     if (res.data.success){
-    //         user = res.data.user
-    //         console.log(res)
-            
-    //     }else{
-    //         console.log(res)
-    //     }
-
-
-
-
-
-
+    
 
 
     async register({commit}, user){
@@ -99,7 +75,7 @@ const actions = {
     }
 }
 const getters = {
-    isloggedIn: state=> !!state.cookie,
+    isloggedIn: state=> !!state.token,
     authStatus: state=>state.status
 }
 
@@ -107,9 +83,9 @@ const mutations = {
     authRequest(state){
         state.status = 'loading'
     },
-    authSuccess(state,cookie,user){
+    authSuccess(state,token,user){
         state.status = 'success'
-        state.cookie = cookie
+        state.token = token
         state.user = user
     },
     authErr(state){
@@ -119,7 +95,7 @@ const mutations = {
 
     logout(state){
         state.status = '',
-        state.cookie = ''
+        state.token = ''
     }
 }
 
