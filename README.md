@@ -1,5 +1,5 @@
 # <p align=center>TODO APP</p>
-<p align=center>[![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)</p>
+[![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
 
 
 This is a show case application using express js on the backend and vue JS on the frontend.
