@@ -65,3 +65,15 @@ npm run prod
 ```
 
 this will instruct Webpack to minify the stylesheets and scripts used for the frontend part of the application.
+
+
+
+## Toools Used
+
+### BACKEND
+
+- Express JS
+- JSONwebtoken
+- Sequelize
+
+- there are some other underlying packages that I used to enhance the functionality of the Application such as *Body-Parser*, 
