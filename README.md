@@ -68,7 +68,7 @@ this will instruct Webpack to minify the stylesheets and scripts used for the fr
 
 
 
-## Toools Used
+## Tools Used
 
 ### BACKEND
 
