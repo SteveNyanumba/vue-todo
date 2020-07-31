@@ -11,10 +11,7 @@ const getters = {
 const actions = {
   async fetchTodos({ commit }) {
     try {
-      const response = await Axios.get(
-        '/api/todos'
-      );
-     console.log(response)
+      const response = await Axios.get('/api/todos');
       
       commit('setTodos', response.data);
   
@@ -24,10 +21,7 @@ const actions = {
   },
   async addTodo({ commit }, todo) {
     try {
-      const response = await Axios.post(
-        '/api/todos',
-        todo
-      )
+      const response = await Axios.post('/api/todos', todo )
       if(response.data.success){
         Toast.fire({
           icon:'success',
@@ -52,10 +46,12 @@ const actions = {
   async deleteTodo({ commit }, id) {
     try {
       const response = await Axios.delete(`/api/todos/${id}`);
-      Toast.fire({
-        icon:'success',
-        message:response.data.message
-      })
+      if (response.data.success){
+        Toast.fire({
+          icon:'success',
+          message:response.data.message
+        })
+      }
       commit('removeTodo', id);
     } catch (err) {
       Toast.fire({
@@ -71,7 +67,7 @@ const mutations = {
       state.todos = todos
     },
   newTodo(state, todo){
-      state.todos.unshift(todo)
+      state.todos.push(todo)
     },
   removeTodo(state, id){
       state.todos = state.todos.filter(todo => todo.id !== id)

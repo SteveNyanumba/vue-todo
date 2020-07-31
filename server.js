@@ -4,7 +4,9 @@ const dotenv = require('dotenv')
 const morgan = require('morgan')
 const apiRoutes = require('./routes/api')
 const bodyParser = require('body-parser')
-const cookieParser = require('cookie-parser')
+const passport = require('passport')
+const cors = require('cors')
+
 const history  = require('connect-history-api-fallback')
 
 // const session = require('express-session')
@@ -19,29 +21,20 @@ if(NODE_ENV === 'development'){
     morgan('dev')
 }
 
-app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.json())
 
-app.use(cookieParser())
-
+// Setting Up Passport
 app.use(passport.initialize());
+require('./config/passport')(passport);
 
+app.use(cors())
 
-app.use((req, res, next) => {
-    if (req.cookies.user_sid && !req.session.user) {
-        res.clearCookie('user_sid');        
-    }
-    next();
-});
 
 app.use('/api',apiRoutes)
 
 app.use(history())
 app.use(express.static('./public'))
-
-
-
-
 
 
 app.listen(PORT, ()=>{

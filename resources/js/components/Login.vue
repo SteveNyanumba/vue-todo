@@ -24,13 +24,9 @@
           </div>
         </div>
         <div class="row justify-content-center">
-          
-          <!-- /.col -->
           <div class="col-4">
-            <button type="submit" class="btn btn-primary btn-block" @click.prevent="login()">Sign In</button>
+            <button type="submit" class="btn btn-primary btn-block" @click.prevent="signin()">Sign In</button>
           </div>
-          <!-- /.col -->
-          <!-- /.col -->
           <div class="col-4">
             <router-link to="/register" class="btn btn-warning btn-block" >Register</router-link>
           </div>
@@ -46,9 +42,10 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 export default {
 name: 'Home',
+computed: mapGetters(["isloggedIn"]),
 created(){
     console.log('component mounted');
 },
@@ -59,20 +56,22 @@ data(){
     }
 },
 methods:{
-  
-  login(){
-    let username = this.username
-    let password = this.password
-    this.$store.dispatch('login',{username, password})
-    .then(() => {
-      this.$router.push('/login')
-    }).catch((err) => {
-      console.log(err)
-    });
-  },
-
-},
-computed: mapGetters(["isloggedIn"]),
+    ...mapActions(["login"]),
+    signin(){
+      let user = {
+        username: this.username,
+        password: this.password
+      }
+      this.login(user)
+      .then((res)=>{
+        if(res.data.success){
+          this.$router.push('/todos')
+        }
+      }).catch((err) => {
+        console.log(err)
+      });
+    },
+  }
 }
 </script>
 

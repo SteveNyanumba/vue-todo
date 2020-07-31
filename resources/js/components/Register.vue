@@ -8,7 +8,7 @@
 
       <form @submit.prevent="register()">
         <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="Enter your Username" v-model="username">
+          <input type="text" name="username" class="form-control" placeholder="Enter your Username" v-model="username">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-user"></span>
@@ -16,7 +16,7 @@
           </div>
         </div>
         <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="Enter your email address" v-model="email">
+          <input type="email" name="email" class="form-control" placeholder="Enter your email address" v-model="email">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>
@@ -24,7 +24,7 @@
           </div>
         </div>
         <div class="input-group mb-3">
-          <input type="password" class="form-control" placeholder="Enter your Password" v-model="password">
+          <input type="password" name="password" class="form-control" placeholder="Enter your Password" v-model="password">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock"></span>
@@ -32,7 +32,7 @@
           </div>
         </div>
         <div class="input-group mb-3">
-          <input type="password" class="form-control" placeholder="Confirm your password" v-model="confirmPassword">
+          <input type="password" name="confirmPassword" class="form-control" placeholder="Confirm your password" v-model="confirmPassword">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock"></span>
@@ -43,7 +43,10 @@
           
           <!-- /.col -->
           <div class="col-4">
-            <button type="submit" class="btn btn-primary btn-block" @click.prevent="register()">Sign In</button>
+            <button type="submit" class="btn btn-primary btn-block" @click.prevent="signup()">Sign In</button>
+          </div>
+          <div class="col-4">
+            <router-link to="/login" type="submit" class="btn btn-warning btn-block" >Log In</router-link>
           </div>
           <!-- /.col -->
         </div>
@@ -58,6 +61,7 @@
 
 <script>
 import Navbar from './sub/Navbar'
+import { mapActions } from 'vuex'
 export default {
 name: 'Home',
 components:{
@@ -72,14 +76,16 @@ data(){
   }
 },
 methods:{
-  register(){
+  ...mapActions(["register"]),
+  signup(){
     let user = {
-      name: this.name,
+      username: this.username,
       email: this.email,
       password: this.password,
       confirmPassword: this.confirmPassword
     }
-    this.$store.dispatch('register', user)
+    this.register(user)
+    
   },
 }
 }

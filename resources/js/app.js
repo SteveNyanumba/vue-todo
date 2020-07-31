@@ -1,53 +1,19 @@
-const { default: store } = require('./storage/store.js')
-const Swal = require('sweetalert2').default
-window.Vue = require('vue')
+import Axios from 'axios'
+import Swal from 'sweetalert2'
+import Vue from 'vue'
+import router from './router'
+import store from './storage/store'
+
 require('./bootstrap.js')
-
-const VueRouter = require('vue-router').default
-
-Vue.use(VueRouter)
-
-const routes = [
-    {
-        path:'/',
-        component:require('./components/Home.vue').default
-    },
-    {
-        path:'/todos',
-        component:require('./components/Todos.vue').default,
-        meta:{
-            requiresAuth: true
-        }
-    },
-    {
-        path:'/login',
-        component:require('./components/Login.vue').default
-    },
-    {
-        path:'/register',
-        component:require('./components/Register.vue').default
-    },
-]
-const router = new VueRouter({
-    mode:'history',
-    routes,
-    
-})
+Vue.config.productionTip = false
+Vue.prototype.$http = Axios;
 
 
+const token = localStorage.getItem("token");
+if (token) {
+  Vue.prototype.$http.defaults.headers.common['Authorization'] = token;
+}
 
-router.beforeEach((to, from, next)=>{
-    if(to.matched.some(rec=> rec.meta.requiresAuth)){
-        if (store.getters.isLoggedIn){
-            next()
-        }else{
-            next('/login')
-        }
-        
-    }else{
-        next()
-    }
-})
 
 const app = new Vue({
     el:'#app',

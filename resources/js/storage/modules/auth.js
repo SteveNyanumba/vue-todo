@@ -1,38 +1,50 @@
 import Axios from "axios";
+import router from "../../router";
 
 const state = {
-    status:'',
-    user:{},
-    token: localStorage.getItem('token') || ''
+    token: localStorage.getItem('token') || '',
+    user: {},
+    status: '',
+    error: null
+}
+const getters = {
+    isLoggedIn: state => !!state.token,
+    authState: state => state.status,
+    user: state => state.user,
+    error: state => state.error
 }
 const actions = {
     async login({commit}, user){
-       try {
-           commit('authRequest')
-           if(!user.username || !user.password){
-            Toast.fire({
-                icon:'error',
-                title:'You have empty fields!'
-              })
-              return
-           }
+        commit('authRequest')
+        try {
            const response = await Axios.post('/api/login', user)
+           if(response.data === undefined){
+               Toast.fire({
+                   icon:'question',
+                   response:'what is going on here?'
+               })
+           }
            if(response.data.success){
-               let token = response.data.token
+               const token = response.data.token
+               const user = response.data.user
+               localStorage.setItem('token', token)
+               Axios.defaults.headers.common['Authorization'] = token
+               router.push('/login')
                Toast.fire({
                    icon:'success',
                    title:response.data.message
                 })
                 commit('authSuccess', token, user)
-           }else{
-            Toast.fire({
-                icon:'warning',
-                title:response.data.message
-              })
            }
-
+           else{
+               Toast.fire({
+                   icon:'warning',
+                   title: response.data.message
+               })
+           }
+           return response
        } catch (err) {
-           commit('authErr')
+           commit('authErr', err)
            Toast.fire({
                icon:'error',
                title:err
@@ -40,62 +52,72 @@ const actions = {
        }
         
     },
-    
-
-
     async register({commit}, user){
         try {
-            const response = await axios.post('/api/register', user)
-            .then((res) => {
+            commit('registerRequest')
+            let response = await axios.post('/api/register', user)
+            if(response.data.success){
                 Toast.fire({
                     icon:'success',
-                    title: res.data.message
+                    title: response.data.message
                 })
-                
-            }).catch((err) => {
-                commit('authErr')
-                console.log(err)
-            });
-            commit('authRequest')
+                commit('registerSuccess')
+            }
+            return response
         } catch (err) {
+            commit('authErr', err)
             Toast.fire({
                 icon:'error',
                 title: err
             })
+            return err
         }
     },
 
     async logout({commit}){
         try {
-            const response = await delete axios.defaults.headers.common['Authorization']
-            commit('logout')
+            await localStorage.removeItem('token');
+            commit('logout');
+            delete axios.defaults.headers.common['Authorization'];
+            router.push('/login');
+            return
         } catch (err) {
-            
+            commit('authErr')
+            console.log(err)
         }
     }
 }
-const getters = {
-    isloggedIn: state=> !!state.token,
-    authStatus: state=>state.status
-}
 
 const mutations = {
-    authRequest(state){
+    authRequest(state) {
+        state.error = null
         state.status = 'loading'
     },
-    authSuccess(state,token,user){
-        state.status = 'success'
+    authSuccess(state, token, user) {
         state.token = token
         state.user = user
+        state.status = 'success'
+        state.error = null
     },
-    authErr(state){
-        state.status = 'error'
-
+    authErr(state, err) {
+        state.error = err
     },
-
-    logout(state){
-        state.status = '',
+    registerRequest(state) {
+        state.error = null
+        state.status = 'loading'
+    },
+    registerSuccess(state) {
+        state.error = null
+        state.status = 'success'
+    },
+    registerError(state, err) {
+        state.error = err.response.data.msg
+    },
+    logout(state) {
+        state.error = null
+        state.status = ''
         state.token = ''
+        state.user = ''
     }
 }
 

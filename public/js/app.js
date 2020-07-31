@@ -7320,10 +7320,12 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-//
-//
-//
-//
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -7370,6 +7372,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'Home',
+  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["isloggedIn"]),
   created: function created() {
     console.log('component mounted');
   },
@@ -7379,23 +7382,23 @@ __webpack_require__.r(__webpack_exports__);
       password: ''
     };
   },
-  methods: {
-    login: function login() {
+  methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(["login"])), {}, {
+    signin: function signin() {
       var _this = this;
 
-      var username = this.username;
-      var password = this.password;
-      this.$store.dispatch('login', {
-        username: username,
-        password: password
-      }).then(function () {
-        _this.$router.push('/login');
+      var user = {
+        username: this.username,
+        password: this.password
+      };
+      this.login(user).then(function (res) {
+        if (res.data.success) {
+          _this.$router.push('/todos');
+        }
       })["catch"](function (err) {
         console.log(err);
       });
     }
-  },
-  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["isloggedIn"])
+  })
 });
 
 /***/ }),
@@ -7410,6 +7413,16 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _sub_Navbar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./sub/Navbar */ "./resources/js/components/sub/Navbar.vue");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
 //
 //
 //
@@ -7469,6 +7482,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'Home',
   components: {
@@ -7482,17 +7496,17 @@ __webpack_require__.r(__webpack_exports__);
       email: ''
     };
   },
-  methods: {
-    register: function register() {
+  methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapActions"])(["register"])), {}, {
+    signup: function signup() {
       var user = {
-        name: this.name,
+        username: this.username,
         email: this.email,
         password: this.password,
         confirmPassword: this.confirmPassword
       };
-      this.$store.dispatch('register', user);
+      this.register(user);
     }
-  }
+  })
 });
 
 /***/ }),
@@ -7553,23 +7567,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   computed: Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapGetters"])(["allTodos"]),
   data: function data() {
-    return {
-      todo: {
-        id: '',
-        title: '',
-        description: '',
-        deadline: '',
-        userId: ''
-      }
-    };
+    return {};
   },
   methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapActions"])(["fetchTodos", "deleteTodo", "updateTodo"])), {}, {
     on2Click: function on2Click(todo) {
-      var updateTodo = {
+      var changeTodo = {
         id: todo.id,
         completed: !todo.completed
       };
-      this.updateTodo(todo);
+      this.updateTodo(changeTodo);
     }
   }),
   created: function created() {
@@ -7652,7 +7658,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         title: '',
         description: '',
         deadline: '',
-        priority: ''
+        priority: '',
+        token: localStorage.getItem('token')
       }
     };
   },
@@ -7675,6 +7682,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -7694,8 +7708,25 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'Navbar'
+  name: 'Navbar',
+  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["isLoggedIn"]),
+  methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(["logout"])), {}, {
+    signout: function signout() {
+      var _this = this;
+
+      this.logout().then(function () {
+        _this.$router.push('/login');
+      })["catch"](function (err) {
+        console.log(err);
+      });
+    }
+  })
 });
 
 /***/ }),
@@ -47404,7 +47435,7 @@ var render = function() {
                         on: {
                           click: function($event) {
                             $event.preventDefault()
-                            return _vm.login()
+                            return _vm.signin()
                           }
                         }
                       },
@@ -47516,7 +47547,11 @@ var render = function() {
                       }
                     ],
                     staticClass: "form-control",
-                    attrs: { type: "text", placeholder: "Enter your Username" },
+                    attrs: {
+                      type: "text",
+                      name: "username",
+                      placeholder: "Enter your Username"
+                    },
                     domProps: { value: _vm.username },
                     on: {
                       input: function($event) {
@@ -47543,7 +47578,8 @@ var render = function() {
                     ],
                     staticClass: "form-control",
                     attrs: {
-                      type: "text",
+                      type: "email",
+                      name: "email",
                       placeholder: "Enter your email address"
                     },
                     domProps: { value: _vm.email },
@@ -47573,6 +47609,7 @@ var render = function() {
                     staticClass: "form-control",
                     attrs: {
                       type: "password",
+                      name: "password",
                       placeholder: "Enter your Password"
                     },
                     domProps: { value: _vm.password },
@@ -47602,6 +47639,7 @@ var render = function() {
                     staticClass: "form-control",
                     attrs: {
                       type: "password",
+                      name: "confirmPassword",
                       placeholder: "Confirm your password"
                     },
                     domProps: { value: _vm.confirmPassword },
@@ -47628,13 +47666,29 @@ var render = function() {
                         on: {
                           click: function($event) {
                             $event.preventDefault()
-                            return _vm.register()
+                            return _vm.signup()
                           }
                         }
                       },
                       [_vm._v("Sign In")]
                     )
-                  ])
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "col-4" },
+                    [
+                      _c(
+                        "router-link",
+                        {
+                          staticClass: "btn btn-warning btn-block",
+                          attrs: { to: "/login", type: "submit" }
+                        },
+                        [_vm._v("Log In")]
+                      )
+                    ],
+                    1
+                  )
                 ])
               ]
             )
@@ -47748,11 +47802,9 @@ var render = function() {
                             _vm._s(todo.title) +
                             "\n                              "
                         ),
-                        _c(
-                          "span",
-                          { staticClass: "badge badge-light badge-pill" },
-                          [_vm._v(_vm._s(todo.deadline))]
-                        )
+                        _c("span", { staticClass: "badge badge-light" }, [
+                          _vm._v(_vm._s(todo.deadline))
+                        ])
                       ]
                     )
                   }),
@@ -48100,7 +48152,28 @@ var render = function() {
                   )
                 ],
                 1
-              )
+              ),
+              _vm._v(" "),
+              _c("li", { staticClass: "nav-item active" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-default",
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        return _vm.signout()
+                      }
+                    }
+                  },
+                  [
+                    _c("i", {
+                      staticClass: "fa fa-power-off",
+                      attrs: { "aria-hidden": "true" }
+                    })
+                  ]
+                )
+              ])
             ])
           ]
         )
@@ -64572,60 +64645,41 @@ module.exports = function(module) {
 /*!*****************************!*\
   !*** ./resources/js/app.js ***!
   \*****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-var _require = __webpack_require__(/*! ./storage/store.js */ "./resources/js/storage/store.js"),
-    store = _require["default"];
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! sweetalert2 */ "./node_modules/sweetalert2/dist/sweetalert2.all.js");
+/* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(sweetalert2__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./router */ "./resources/js/router.js");
+/* harmony import */ var _storage_store__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./storage/store */ "./resources/js/storage/store.js");
 
-var Swal = __webpack_require__(/*! sweetalert2 */ "./node_modules/sweetalert2/dist/sweetalert2.all.js")["default"];
 
-window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+
+
+
 
 __webpack_require__(/*! ./bootstrap.js */ "./resources/js/bootstrap.js");
 
-var VueRouter = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js")["default"];
+vue__WEBPACK_IMPORTED_MODULE_2___default.a.config.productionTip = false;
+vue__WEBPACK_IMPORTED_MODULE_2___default.a.prototype.$http = axios__WEBPACK_IMPORTED_MODULE_0___default.a;
+var token = localStorage.getItem("token");
 
-Vue.use(VueRouter);
-var routes = [{
-  path: '/',
-  component: __webpack_require__(/*! ./components/Home.vue */ "./resources/js/components/Home.vue")["default"]
-}, {
-  path: '/todos',
-  component: __webpack_require__(/*! ./components/Todos.vue */ "./resources/js/components/Todos.vue")["default"],
-  meta: {
-    requiresAuth: true
-  }
-}, {
-  path: '/login',
-  component: __webpack_require__(/*! ./components/Login.vue */ "./resources/js/components/Login.vue")["default"]
-}, {
-  path: '/register',
-  component: __webpack_require__(/*! ./components/Register.vue */ "./resources/js/components/Register.vue")["default"]
-}];
-var router = new VueRouter({
-  mode: 'history',
-  routes: routes
-});
-router.beforeEach(function (to, from, next) {
-  if (to.matched.some(function (rec) {
-    return rec.meta.requiresAuth;
-  })) {
-    if (store.getters.isLoggedIn) {
-      next();
-    } else {
-      next('/login');
-    }
-  } else {
-    next();
-  }
-});
-var app = new Vue({
+if (token) {
+  vue__WEBPACK_IMPORTED_MODULE_2___default.a.prototype.$http.defaults.headers.common['Authorization'] = token;
+}
+
+var app = new vue__WEBPACK_IMPORTED_MODULE_2___default.a({
   el: '#app',
-  router: router,
-  store: store
+  router: _router__WEBPACK_IMPORTED_MODULE_3__["default"],
+  store: _storage_store__WEBPACK_IMPORTED_MODULE_4__["default"]
 });
-window.Toast = Swal.mixin({
+window.Toast = sweetalert2__WEBPACK_IMPORTED_MODULE_1___default.a.mixin({
   toast: true,
   position: 'top-right',
   timer: 4000,
@@ -65071,6 +65125,76 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/router.js":
+/*!********************************!*\
+  !*** ./resources/js/router.js ***!
+  \********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
+/* harmony import */ var _storage_store__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./storage/store */ "./resources/js/storage/store.js");
+
+
+
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]);
+var routes = [{
+  path: '/',
+  component: __webpack_require__(/*! ./components/Home.vue */ "./resources/js/components/Home.vue")["default"]
+}, {
+  path: '/todos',
+  component: __webpack_require__(/*! ./components/Todos.vue */ "./resources/js/components/Todos.vue")["default"],
+  meta: {
+    requiresAuth: true
+  }
+}, {
+  path: '/login',
+  component: __webpack_require__(/*! ./components/Login.vue */ "./resources/js/components/Login.vue")["default"],
+  meta: {
+    requiresGuest: true
+  }
+}, {
+  path: '/register',
+  component: __webpack_require__(/*! ./components/Register.vue */ "./resources/js/components/Register.vue")["default"],
+  meta: {
+    requiresGuest: true
+  }
+}];
+var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
+  mode: 'history',
+  routes: routes
+});
+router.beforeEach(function (to, from, next) {
+  if (to.matched.some(function (record) {
+    return record.meta.requiresAuth;
+  })) {
+    if (!_storage_store__WEBPACK_IMPORTED_MODULE_2__["default"].getters.isLoggedIn) {
+      // Redirect to the Login Page
+      next('/login');
+    } else {
+      next();
+    }
+  } else if (to.matched.some(function (record) {
+    return record.meta.requiresGuest;
+  })) {
+    if (_storage_store__WEBPACK_IMPORTED_MODULE_2__["default"].getters.isLoggedIn) {
+      // Redirect to the Todos Page
+      next('/todos');
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
+});
+/* harmony default export */ __webpack_exports__["default"] = (router);
+
+/***/ }),
+
 /***/ "./resources/js/storage/modules/auth.js":
 /*!**********************************************!*\
   !*** ./resources/js/storage/modules/auth.js ***!
@@ -65084,6 +65208,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../router */ "./resources/js/router.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -65091,48 +65216,63 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 
+
 var state = {
-  status: '',
+  token: localStorage.getItem('token') || '',
   user: {},
-  token: localStorage.getItem('token') || ''
+  status: '',
+  error: null
+};
+var getters = {
+  isLoggedIn: function isLoggedIn(state) {
+    return !!state.token;
+  },
+  authState: function authState(state) {
+    return state.status;
+  },
+  user: function user(state) {
+    return state.user;
+  },
+  error: function error(state) {
+    return state.error;
+  }
 };
 var actions = {
   login: function login(_ref, user) {
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-      var commit, response, token;
+      var commit, response, token, _user;
+
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
               commit = _ref.commit;
-              _context.prev = 1;
               commit('authRequest');
-
-              if (!(!user.username || !user.password)) {
-                _context.next = 6;
-                break;
-              }
-
-              Toast.fire({
-                icon: 'error',
-                title: 'You have empty fields!'
-              });
-              return _context.abrupt("return");
-
-            case 6:
-              _context.next = 8;
+              _context.prev = 2;
+              _context.next = 5;
               return axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/api/login', user);
 
-            case 8:
+            case 5:
               response = _context.sent;
+
+              if (response.data === undefined) {
+                Toast.fire({
+                  icon: 'question',
+                  response: 'what is going on here?'
+                });
+              }
 
               if (response.data.success) {
                 token = response.data.token;
+                _user = response.data.user;
+                localStorage.setItem('token', token);
+                axios__WEBPACK_IMPORTED_MODULE_1___default.a.defaults.headers.common['Authorization'] = token;
+                _router__WEBPACK_IMPORTED_MODULE_2__["default"].push('/login');
                 Toast.fire({
                   icon: 'success',
                   title: response.data.message
                 });
-                commit('authSuccess', token, user);
+                commit('authSuccess', token, _user);
               } else {
                 Toast.fire({
                   icon: 'warning',
@@ -65140,24 +65280,23 @@ var actions = {
                 });
               }
 
-              _context.next = 16;
-              break;
+              return _context.abrupt("return", response);
 
-            case 12:
-              _context.prev = 12;
-              _context.t0 = _context["catch"](1);
-              commit('authErr');
+            case 11:
+              _context.prev = 11;
+              _context.t0 = _context["catch"](2);
+              commit('authErr', _context.t0);
               Toast.fire({
                 icon: 'error',
                 title: _context.t0
               });
 
-            case 16:
+            case 15:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[1, 12]]);
+      }, _callee, null, [[2, 11]]);
     }))();
   },
   register: function register(_ref2, user) {
@@ -65169,42 +65308,44 @@ var actions = {
             case 0:
               commit = _ref2.commit;
               _context2.prev = 1;
-              _context2.next = 4;
-              return axios.post('/api/register', user).then(function (res) {
+              commit('registerRequest');
+              _context2.next = 5;
+              return axios.post('/api/register', user);
+
+            case 5:
+              response = _context2.sent;
+
+              if (response.data.success) {
                 Toast.fire({
                   icon: 'success',
-                  title: res.data.message
+                  title: response.data.message
                 });
-              })["catch"](function (err) {
-                commit('authErr');
-                console.log(err);
-              });
+                commit('registerSuccess');
+              }
 
-            case 4:
-              response = _context2.sent;
-              commit('authRequest');
-              _context2.next = 11;
-              break;
+              return _context2.abrupt("return", response);
 
-            case 8:
-              _context2.prev = 8;
+            case 10:
+              _context2.prev = 10;
               _context2.t0 = _context2["catch"](1);
+              commit('authErr', _context2.t0);
               Toast.fire({
                 icon: 'error',
                 title: _context2.t0
               });
+              return _context2.abrupt("return", _context2.t0);
 
-            case 11:
+            case 15:
             case "end":
               return _context2.stop();
           }
         }
-      }, _callee2, null, [[1, 8]]);
+      }, _callee2, null, [[1, 10]]);
     }))();
   },
   logout: function logout(_ref3) {
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
-      var commit, response;
+      var commit;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
         while (1) {
           switch (_context3.prev = _context3.next) {
@@ -65212,49 +65353,59 @@ var actions = {
               commit = _ref3.commit;
               _context3.prev = 1;
               _context3.next = 4;
-              return delete axios.defaults.headers.common['Authorization'];
+              return localStorage.removeItem('token');
 
             case 4:
-              response = _context3.sent;
               commit('logout');
-              _context3.next = 10;
-              break;
-
-            case 8:
-              _context3.prev = 8;
-              _context3.t0 = _context3["catch"](1);
+              delete axios.defaults.headers.common['Authorization'];
+              _router__WEBPACK_IMPORTED_MODULE_2__["default"].push('/login');
+              return _context3.abrupt("return");
 
             case 10:
+              _context3.prev = 10;
+              _context3.t0 = _context3["catch"](1);
+              commit('authErr');
+              console.log(_context3.t0);
+
+            case 14:
             case "end":
               return _context3.stop();
           }
         }
-      }, _callee3, null, [[1, 8]]);
+      }, _callee3, null, [[1, 10]]);
     }))();
-  }
-};
-var getters = {
-  isloggedIn: function isloggedIn(state) {
-    return !!state.token;
-  },
-  authStatus: function authStatus(state) {
-    return state.status;
   }
 };
 var mutations = {
   authRequest: function authRequest(state) {
+    state.error = null;
     state.status = 'loading';
   },
   authSuccess: function authSuccess(state, token, user) {
-    state.status = 'success';
     state.token = token;
     state.user = user;
+    state.status = 'success';
+    state.error = null;
   },
-  authErr: function authErr(state) {
-    state.status = 'error';
+  authErr: function authErr(state, err) {
+    state.error = err;
+  },
+  registerRequest: function registerRequest(state) {
+    state.error = null;
+    state.status = 'loading';
+  },
+  registerSuccess: function registerSuccess(state) {
+    state.error = null;
+    state.status = 'success';
+  },
+  registerError: function registerError(state, err) {
+    state.error = err.response.data.msg;
   },
   logout: function logout(state) {
-    state.status = '', state.token = '';
+    state.error = null;
+    state.status = '';
+    state.token = '';
+    state.user = '';
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -65310,22 +65461,21 @@ var actions = {
 
             case 4:
               _response = _context.sent;
-              console.log(_response);
               commit('setTodos', _response.data);
-              _context.next = 12;
+              _context.next = 11;
               break;
 
-            case 9:
-              _context.prev = 9;
+            case 8:
+              _context.prev = 8;
               _context.t0 = _context["catch"](1);
               console.log(_context.t0);
 
-            case 12:
+            case 11:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[1, 9]]);
+      }, _callee, null, [[1, 8]]);
     }))();
   },
   addTodo: function addTodo(_ref2, todo) {
@@ -65394,10 +65544,14 @@ var actions = {
 
             case 4:
               _response3 = _context3.sent;
-              Toast.fire({
-                icon: 'success',
-                message: _response3.data.message
-              });
+
+              if (_response3.data.success) {
+                Toast.fire({
+                  icon: 'success',
+                  message: _response3.data.message
+                });
+              }
+
               commit('removeTodo', id);
               _context3.next = 12;
               break;
@@ -65424,7 +65578,7 @@ var mutations = {
     state.todos = todos;
   },
   newTodo: function newTodo(state, todo) {
-    state.todos.unshift(todo);
+    state.todos.push(todo);
   },
   removeTodo: function removeTodo(state, id) {
     state.todos = state.todos.filter(function (todo) {

@@ -1,113 +1,125 @@
 const User = require('../app/User')
 const Todo = require('../app/Todo')
 const router = require('express').Router()
-const dotenv = require('dotenv')
+const dotenv = require('dotenv').config()
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
+const passport = require('passport')
+const jwtDecode = require('jwt-decode')
 
-dotenv.config({
-    path:'../.env'
-})
 
+// dotenv.config({
+//     path:'../.env'
+// })
+const {APP_SECRET} = process.env
 
-//Authentication middleware
 const auth = (req,res,next)=>{
-    if(!req.headers.authorization){
-        return res.status(301).json({message:'You must log in first!'})
-    }else{
+    if(req.headers['authorization']){
         next()
+    }else {
+        return res.status(403).json({message:'You must Log in first!'})
     }
 }
 
 
 // Login as Existing User
 router.post('/login', async (req,res)=>{
-    try {
-        const {APP_SECRET} = process.env
         const {username, password} = req.body
-        const userExists = await User.findOne({where:{username}})
-        if(userExists === null){
-            return res.status(404).json({
-                message: 'User not found'
+        try {
+            const user = await User.findOne({
+                where:{
+                    username
+                }
             })
-        }else if(!userExists === null && !userExists.validPassword(password)){
-            return res.status(400).json({
-                message: 'Password is invalid'
-            })
+            if(!user){
+                return res.status(404).json({
+                    message: 'User not found'
+                })
+            }
+            const validUser = bcrypt.compareSync(password, user.password)
+            if(user && !validUser){
+                return res.status(400).json({
+                    message: 'Password is invalid'
+                })
+            }
+            const payload = {
+                id: user.id, 
+                username: user.username,
+                password: user.password, 
+                email: user.email
+            }
+            jwt.sign(payload, APP_SECRET, {expiresIn: 1200},(err,token)=>{
+                    if (err) throw err
+                    res.status(200).json({
+                        success:true,
+                        message:'Successfully logged in!',
+                        token: `Bearer ${token}`,
+                        user
+                    })
+                })
+        } catch (error) {
+            res.status(400).json({message:'Failed to log in'})
+            console.log(error,'logging in')
         }
-        
-        let token = jwt.sign(userExists.dataValues, APP_SECRET,{
-            expiresIn: 600
-        })
-        // localStorage.setItem('token',token)
-        res.status(200).json({
-            success:true,
-            message:'Successfully logged in!',
-            token
-        })
-    } catch (err) {
-        res.json({message:err}).status(500)
-    }
+        // return
 })
 
 
 // register a new user
-router.post('/register', (req,res)=>{
-    const usernameExists = User.findOne({where: {username : req.body.username}})
-    const emailExists = User.findOne({where: {email : req.body.email}})
-    if(!req.body.username === null) return res.status(400).json({mesage:'Username Field is required'})
-    if(!req.body.password === null) return res.status(400).json({mesage:'Password Field is required'})
-    if(!req.body.confirmPassword === null) return res.status(400).json({mesage:'Please confirm your password'})
+router.post('/register', async (req,res)=>{
+    const {username, password, email, confirmPassword} = req.body
+    User.findOne({where: {username}})
+    .then((usernameExists) => {
+        if (usernameExists)return res.status(400).json({message: 'Username already exists!'})
+    }).catch((err) => {
+        res.json({message: err}).status(400)
+    });
+    User.findOne({where: {email}})
+    .then((emailExists) => {
+        if (emailExists)return res.status(400).json({message: 'email already exists!'})
+    }).catch((err) => {
+        res.json({message: err}).status(400)
+    });
     
-    if (!req.body.password === req.body.confirmPassword) return res.status(400).json({message:'Passwords do not match!'})
-    
-    else if (!usernameExists === null){
-        return res.status(400).json({
-            message: 'Username already exists!'
+    if(username === '') return res.status(400).json({message:'Username Field is required'})
+    if(password === '') return res.status(400).json({message:'Password Field is required'})
+    if(confirmPassword === '') return res.status(400).json({message:'Please confirm your password'})
+    if (password !== confirmPassword) return res.status(400).json({message:'Passwords do not match!'})
+    try {
+        const newUser = await User.create({
+            username,
+            password,
+            email
         })
+        res.status(200).json({
+            success:'true',
+            message:'Successfully Registered!',
+            user:newUser
+        })
+        console.log(newUser)
+    } catch (err) {
+        res.json({message:err}).status(400)
+        console.log(err,'registering')
     }
-    
-    else if (!emailExists === null){
-        return res.status(400).json({
-            message: 'email already exists!'
-        })
-    }
-    
-    else{
-        User.create({
-            username:req.body.username,
-            email:req.body.email,
-            password:req.body.password
-        })
-        .then((user)=>{
-            let token = jwt.sign(user)
-            res.status(200).json({
-                success:'true',
-                message:'Successfully Registered!',
-                token
-            })
-            
-        })
-        .catch((err)=>{
-            res.json({message:err}).status(400)
-        })
-        
-    }
+       
 })
 
 //Get the Todos belonging to the User
-router.get('/todos', auth, async(req,res)=>{
+router.get('/todos',auth, async(req,res)=>{
     try {
-        const {APP_SECRET} = process.env
-        const user = jwt.verify(req.headers['authorization'], APP_SECRET )
-        const userTodos = await Todo.findAll({
+        let token = req.headers.authorization
+        const user = jwtDecode(token)
+
+        const todos = await Todo.findAll({
             where: {userId: user.id}
         })
-        if (userTodos.length === 0) {
+        if (todos.length === 0) {
             return res.status(200).json({
-                message:'There are no todos here for you'
+                message:'There are no todos here for you',
+                todos
             })
         } else {
-            res.json({succes:true, userTodos})
+            res.json({succes:true, todos})
         }
     } catch (err) {
         res.json({message:err}).status(400)
@@ -117,17 +129,16 @@ router.get('/todos', auth, async(req,res)=>{
 // Post a new Todo Item
 router.post('/todos',auth, async(req,res)=>{
     try {
-        const {APP_SECRET} = process.env
-        let token = req.headers['authorization']
-        const user = await jwt.verify(token, APP_SECRET)
-        const {title, description, deadline} = req.body
+        const {title, description, priority, deadline, token} = req.body
+        const user = jwtDecode(token)
         const todo = await Todo.create({
             title,
             description,
             deadline,
+            priority,
             userId:user.id
         })
-        res.json({success:true, message:'Successfully added a new Todo!', todo})
+        res.json({success:true, message:'Successfully added a new Todo!', todo}).status(200)
     } catch (err) {
         res.json({message:err}).status(400)
     }
@@ -141,6 +152,7 @@ router.delete('/todos/:id',auth, async (req,res)=>{
         res.status(200).json({
             success:true,
             message:'Successfully deleted Todo Item',
+            todo
         })
     } catch (err) {
         res.status(400).json({
@@ -150,17 +162,5 @@ router.delete('/todos/:id',auth, async (req,res)=>{
 })
 
 
-// Logout of a session
-router.post('/logout', auth, (req,res)=>{
-    if(req.session.user && req.cookies.user_sid){
-        res.clearCookie('user_sid')
-        return res.status(200).json({
-            message:'You have successffully logout',
-            success:true
-        })
-    }else{
-        res.redirect('/login')
-    }
-})
 
 module.exports = router

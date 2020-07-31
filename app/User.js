@@ -1,8 +1,5 @@
 const {Sequelize, STRING, INTEGER} = require('sequelize')
-const dotenv = require('dotenv')
-dotenv.config({
-  path:'../.env'
-})
+const dotenv = require('dotenv').config()
 const bcrypt = require('bcrypt')
 const DB = process.env.DB_CONNECTION
 
@@ -38,13 +35,8 @@ const User = sequelize.define('users', {
         beforeCreate: (user) => {
           const salt = bcrypt.genSaltSync();
           user.password = bcrypt.hashSync(user.password, salt);
-        }
+        },
       },
-      instanceMethods: {
-        validPassword: function(password) {
-          return bcrypt.compareSync(password, this.password);
-        }
-      }    
 })
 
 sequelize.sync()

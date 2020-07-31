@@ -56,7 +56,8 @@ export default {
                 title:'',
                 description:'',
                 deadline:'',
-                priority:''
+                priority:'',
+                token:localStorage.getItem('token')
             }
         }
     },

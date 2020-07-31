@@ -12,14 +12,33 @@
           <li class="nav-item">
             <router-link class="nav-link" to="/register">Register</router-link>
           </li>
+          <li class="nav-item active">
+            <button class="btn btn-default" @click.prevent="signout()"><i class="fa fa-power-off" aria-hidden="true"></i></button>
+          </li>
         </ul>
+        
       </div>
     </nav>
   </div>
 </template>
 <script>
+import { mapGetters, mapActions } from 'vuex'
+
 export default {
-    name:'Navbar'
+name:'Navbar',
+computed:mapGetters(["isLoggedIn"]),
+methods:{
+  ...mapActions(["logout"]),
+  signout(){
+    this.logout()
+    .then(() => {
+      this.$router.push('/login')
+    }).catch((err) => {
+      console.log(err)
+    });
+  }
+}
+
 
 }
 </script>
