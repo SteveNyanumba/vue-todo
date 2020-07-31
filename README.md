@@ -1,6 +1,6 @@
 # <p align=center>TODO APP</p>
 
-<p align=center><img src="https://forthebadge.com/images/badges/winter-is-coming.svg"></p>
+<p align=center><img src="https://forthebadge.com/images/badges/winter-is-coming.svg">      <img src="https://forthebadge.com/images/badges/made-with-vue.svg"></p>
 
 
 
