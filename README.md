@@ -1,4 +1,4 @@
-# Vue Todo App
+# <p align=center>TODO APP</p>
 
 This is a show case application using express js on the backend and vue JS on the frontend.
 
