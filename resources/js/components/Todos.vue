@@ -7,11 +7,27 @@
                   <div class="card px-3">
                       <div class="card-body">
                           <h4 class="card-title text-center">Todo App</h4>
-                          <ul class="list-group mb-3">
-                              <li class="list-group-item d-flex justify-content-between align-items-center" v-for="todo in allTodos" :key="todo.id" v-bind:class="{'active':todo.completed}" @dblclick="on2Click">
-                                {{ todo.title }}
-                                <span class="badge badge-light">{{ todo.deadline }}</span>
-                            </li>
+                          <div class="box-body table-responsive no-padding">
+                            <table class="table table-hover">
+                                <tbody>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Deadline</th>
+                                        <th>Status</th>
+                                        <th>Description</th>
+                                    </tr>
+                                    <tr v-for="todo in allTodos" :key="todo.id">
+                                        <td>{{ todo.title }}</td>
+                                        <td>{{ todo.deadline }}</td>
+                                        <td>
+                                            <span class="alert alert-success text-center" v-if="todo.completed">Completed</span>
+                                            <span class="alert alert-danger text-center" v-else>incomplete</span>
+                                        </td>
+                                        <td>{{ todo.description }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            </div>
                           </ul>
                       </div>
                   </div>

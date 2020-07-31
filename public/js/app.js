@@ -7556,6 +7556,22 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -47784,31 +47800,49 @@ var render = function() {
                 ]),
                 _vm._v(" "),
                 _c(
-                  "ul",
-                  { staticClass: "list-group mb-3" },
-                  _vm._l(_vm.allTodos, function(todo) {
-                    return _c(
-                      "li",
-                      {
-                        key: todo.id,
-                        staticClass:
-                          "list-group-item d-flex justify-content-between align-items-center",
-                        class: { active: todo.completed },
-                        on: { dblclick: _vm.on2Click }
-                      },
-                      [
-                        _vm._v(
-                          "\n                              " +
-                            _vm._s(todo.title) +
-                            "\n                              "
-                        ),
-                        _c("span", { staticClass: "badge badge-light" }, [
-                          _vm._v(_vm._s(todo.deadline))
-                        ])
-                      ]
-                    )
-                  }),
-                  0
+                  "div",
+                  { staticClass: "box-body table-responsive no-padding" },
+                  [
+                    _c("table", { staticClass: "table table-hover" }, [
+                      _c(
+                        "tbody",
+                        [
+                          _vm._m(0),
+                          _vm._v(" "),
+                          _vm._l(_vm.allTodos, function(todo) {
+                            return _c("tr", { key: todo.id }, [
+                              _c("td", [_vm._v(_vm._s(todo.title))]),
+                              _vm._v(" "),
+                              _c("td", [_vm._v(_vm._s(todo.deadline))]),
+                              _vm._v(" "),
+                              _c("td", [
+                                todo.completed
+                                  ? _c(
+                                      "span",
+                                      {
+                                        staticClass:
+                                          "alert alert-success text-center"
+                                      },
+                                      [_vm._v("Completed")]
+                                    )
+                                  : _c(
+                                      "span",
+                                      {
+                                        staticClass:
+                                          "alert alert-danger text-center"
+                                      },
+                                      [_vm._v("incomplete")]
+                                    )
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [_vm._v(_vm._s(todo.description))])
+                            ])
+                          })
+                        ],
+                        2
+                      )
+                    ])
+                  ]
                 )
               ])
             ])
@@ -47821,7 +47855,22 @@ var render = function() {
     1
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("tr", [
+      _c("th", [_vm._v("Title")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Deadline")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Status")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Description")])
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -65524,6 +65573,28 @@ var actions = {
       }, _callee2, null, [[1, 9]]);
     }))();
   },
+  // async updateTodo({commit},todo,id){
+  //   try {
+  //     commit('markCompleted', todo, id)
+  //     const response = await Axios.put(`/api/todos/${id}`, todo)
+  //     if(response.data.success){
+  //       Toast.fire({
+  //         icon:'success',
+  //         title:response.data.message
+  //       })
+  //     }else{
+  //       Toast.fire({
+  //         icon:'warning',
+  //         title:response.data.message
+  //       })
+  //     }
+  //   } catch (err) {
+  //     Toast.fire({
+  //       icon:'error',
+  //       title:err
+  //     })
+  //   }
+  // },
   deleteTodo: function deleteTodo(_ref3, id) {
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
       var commit, response;
@@ -65533,10 +65604,11 @@ var actions = {
             case 0:
               commit = _ref3.commit;
               _context3.prev = 1;
-              _context3.next = 4;
+              commit('removeTodo', id);
+              _context3.next = 5;
               return axios__WEBPACK_IMPORTED_MODULE_1___default.a["delete"]("/api/todos/".concat(id));
 
-            case 4:
+            case 5:
               response = _context3.sent;
 
               if (response.data.success) {
@@ -65546,7 +65618,6 @@ var actions = {
                 });
               }
 
-              commit('removeTodo', id);
               _context3.next = 12;
               break;
 
@@ -65572,13 +65643,16 @@ var mutations = {
     state.todos = todos;
   },
   newTodo: function newTodo(state, todo) {
-    state.todos.push(todo);
+    state.todos.unshift(todo);
   },
   removeTodo: function removeTodo(state, id) {
     state.todos = state.todos.filter(function (todo) {
       return todo.id !== id;
     });
-  }
+  } // markCompleted(todo){
+  //   !todo.completed
+  // }
+
 };
 /* harmony default export */ __webpack_exports__["default"] = ({
   state: state,

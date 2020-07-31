@@ -41,8 +41,31 @@ const actions = {
       })
     }
   },
+  // async updateTodo({commit},todo,id){
+  //   try {
+  //     commit('markCompleted', todo, id)
+  //     const response = await Axios.put(`/api/todos/${id}`, todo)
+  //     if(response.data.success){
+  //       Toast.fire({
+  //         icon:'success',
+  //         title:response.data.message
+  //       })
+  //     }else{
+  //       Toast.fire({
+  //         icon:'warning',
+  //         title:response.data.message
+  //       })
+  //     }
+  //   } catch (err) {
+  //     Toast.fire({
+  //       icon:'error',
+  //       title:err
+  //     })
+  //   }
+  // },
   async deleteTodo({ commit }, id) {
     try {
+      commit('removeTodo', id);
       const response = await Axios.delete(`/api/todos/${id}`);
       if (response.data.success){
         Toast.fire({
@@ -50,7 +73,6 @@ const actions = {
           message:response.data.message
         })
       }
-      commit('removeTodo', id);
     } catch (err) {
       Toast.fire({
         icon:'error',
@@ -63,13 +85,16 @@ const actions = {
 const mutations = {
   setTodos(state, todos){
       state.todos = todos
-    },
+  },
   newTodo(state, todo){
-      state.todos.push(todo)
-    },
+      state.todos.unshift(todo)
+  },
   removeTodo(state, id){
       state.todos = state.todos.filter(todo => todo.id !== id)
-    },
+  },
+  // markCompleted(todo){
+  //   !todo.completed
+  // }
 };
 
 export default {

@@ -111,7 +111,8 @@ router.get('/todos',auth, async(req,res)=>{
         const user = jwtDecode(token)
 
         const todos = await Todo.findAll({
-            where: {userId: user.id}
+            where: {userId: user.id},
+            order: [ [ 'createdAt', 'DESC' ]]
         })
         if (todos.length === 0) {
             return res.status(200).json({
