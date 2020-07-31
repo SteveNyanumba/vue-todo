@@ -76,4 +76,12 @@ this will instruct Webpack to minify the stylesheets and scripts used for the fr
 - JSONwebtoken
 - Sequelize
 
-- there are some other underlying packages that I used to enhance the functionality of the Application such as *Body-Parser*, 
+### FRONTEND
+
+- Vue *with Vuex*
+- Laravel MIX webpack wrapper
+- Bootstrap 4.5
+- Fontawesome 5
+- SASS
+- Sweetalert
+
