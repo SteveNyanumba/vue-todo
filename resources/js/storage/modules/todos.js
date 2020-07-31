@@ -13,7 +13,7 @@ const actions = {
     try {
       const response = await Axios.get('/api/todos');
       
-      commit('setTodos', response.data);
+      commit('setTodos', response.data.todos);
   
     } catch (err) {
       console.log(err)
@@ -21,6 +21,7 @@ const actions = {
   },
   async addTodo({ commit }, todo) {
     try {
+      commit('newTodo', todo)
       const response = await Axios.post('/api/todos', todo )
       if(response.data.success){
         Toast.fire({
@@ -33,15 +34,12 @@ const actions = {
           title:response.data.message
         })
       }
-      commit('newTodo', todo)
     } catch (err) {
       Toast.fire({
         icon:'error',
         title:err
       })
     }
-
-    commit('newTodo', response.data);
   },
   async deleteTodo({ commit }, id) {
     try {

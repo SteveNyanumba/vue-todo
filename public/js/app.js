@@ -65267,7 +65267,6 @@ var actions = {
                 _user = response.data.user;
                 localStorage.setItem('token', token);
                 axios__WEBPACK_IMPORTED_MODULE_1___default.a.defaults.headers.common['Authorization'] = token;
-                _router__WEBPACK_IMPORTED_MODULE_2__["default"].push('/login');
                 Toast.fire({
                   icon: 'success',
                   title: response.data.message
@@ -65316,6 +65315,7 @@ var actions = {
               response = _context2.sent;
 
               if (response.data.success) {
+                _router__WEBPACK_IMPORTED_MODULE_2__["default"].push('/login');
                 Toast.fire({
                   icon: 'success',
                   title: response.data.message
@@ -65448,8 +65448,7 @@ var getters = {
 var actions = {
   fetchTodos: function fetchTodos(_ref) {
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-      var commit, _response;
-
+      var commit, response;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -65460,8 +65459,8 @@ var actions = {
               return axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/api/todos');
 
             case 4:
-              _response = _context.sent;
-              commit('setTodos', _response.data);
+              response = _context.sent;
+              commit('setTodos', response.data.todos);
               _context.next = 11;
               break;
 
@@ -65480,33 +65479,32 @@ var actions = {
   },
   addTodo: function addTodo(_ref2, todo) {
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
-      var commit, _response2;
-
+      var commit, response;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
               commit = _ref2.commit;
               _context2.prev = 1;
-              _context2.next = 4;
+              commit('newTodo', todo);
+              _context2.next = 5;
               return axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/api/todos', todo);
 
-            case 4:
-              _response2 = _context2.sent;
+            case 5:
+              response = _context2.sent;
 
-              if (_response2.data.success) {
+              if (response.data.success) {
                 Toast.fire({
                   icon: 'success',
-                  title: _response2.data.message
+                  title: response.data.message
                 });
               } else {
                 Toast.fire({
                   icon: 'question',
-                  title: _response2.data.message
+                  title: response.data.message
                 });
               }
 
-              commit('newTodo', todo);
               _context2.next = 12;
               break;
 
@@ -65519,9 +65517,6 @@ var actions = {
               });
 
             case 12:
-              commit('newTodo', response.data);
-
-            case 13:
             case "end":
               return _context2.stop();
           }
@@ -65531,8 +65526,7 @@ var actions = {
   },
   deleteTodo: function deleteTodo(_ref3, id) {
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
-      var commit, _response3;
-
+      var commit, response;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
         while (1) {
           switch (_context3.prev = _context3.next) {
@@ -65543,12 +65537,12 @@ var actions = {
               return axios__WEBPACK_IMPORTED_MODULE_1___default.a["delete"]("/api/todos/".concat(id));
 
             case 4:
-              _response3 = _context3.sent;
+              response = _context3.sent;
 
-              if (_response3.data.success) {
+              if (response.data.success) {
                 Toast.fire({
                   icon: 'success',
-                  message: _response3.data.message
+                  message: response.data.message
                 });
               }
 

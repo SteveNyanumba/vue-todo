@@ -29,7 +29,6 @@ const actions = {
                const user = response.data.user
                localStorage.setItem('token', token)
                Axios.defaults.headers.common['Authorization'] = token
-               router.push('/login')
                Toast.fire({
                    icon:'success',
                    title:response.data.message
@@ -57,6 +56,7 @@ const actions = {
             commit('registerRequest')
             let response = await axios.post('/api/register', user)
             if(response.data.success){
+                router.push('/login')
                 Toast.fire({
                     icon:'success',
                     title: response.data.message
