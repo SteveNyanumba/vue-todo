@@ -47798,81 +47798,73 @@ var render = function() {
                   _vm._v("Todo App")
                 ]),
                 _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "box-body table-responsive no-padding" },
-                  [
-                    _c("table", { staticClass: "table table-hover" }, [
-                      _c(
-                        "tbody",
-                        [
-                          _vm._m(0),
-                          _vm._v(" "),
-                          _vm._l(_vm.allTodos, function(todo) {
-                            return _c(
-                              "tr",
-                              {
-                                key: todo.id,
-                                on: {
-                                  dblclick: function($event) {
-                                    return _vm.on2Click(todo)
-                                  }
+                _c("div", { staticClass: "box-body table-responsive" }, [
+                  _c("table", { staticClass: "table table-hover" }, [
+                    _c(
+                      "tbody",
+                      [
+                        _vm._m(0),
+                        _vm._v(" "),
+                        _vm._l(_vm.allTodos, function(todo) {
+                          return _c(
+                            "tr",
+                            {
+                              key: todo.id,
+                              on: {
+                                dblclick: function($event) {
+                                  return _vm.on2Click(todo)
                                 }
-                              },
-                              [
-                                _c("td", [_vm._v(_vm._s(todo.title))]),
-                                _vm._v(" "),
-                                _c("td", [_vm._v(_vm._s(todo.deadline))]),
-                                _vm._v(" "),
-                                _c("td", [
-                                  todo.completed
-                                    ? _c(
-                                        "span",
-                                        {
-                                          staticClass:
-                                            "alert alert-success text-center"
-                                        },
-                                        [_vm._v("Completed")]
-                                      )
-                                    : _c(
-                                        "span",
-                                        {
-                                          staticClass:
-                                            "alert alert-danger text-center"
-                                        },
-                                        [_vm._v("incomplete")]
-                                      )
-                                ]),
-                                _vm._v(" "),
-                                _c("td", [_vm._v(_vm._s(todo.description))]),
-                                _vm._v(" "),
-                                _c("td", [
-                                  _c(
-                                    "button",
-                                    {
-                                      staticClass: "btn",
-                                      on: {
-                                        click: function($event) {
-                                          return _vm.deleteTodo(todo.id)
-                                        }
+                              }
+                            },
+                            [
+                              _c("td", [_vm._v(_vm._s(todo.title))]),
+                              _vm._v(" "),
+                              _c("td", [_vm._v(_vm._s(todo.deadline))]),
+                              _vm._v(" "),
+                              _c("td", [
+                                todo.completed
+                                  ? _c(
+                                      "span",
+                                      {
+                                        staticClass:
+                                          "alert alert-success text-center"
+                                      },
+                                      [_vm._v("Completed")]
+                                    )
+                                  : _c(
+                                      "span",
+                                      {
+                                        staticClass:
+                                          "alert alert-danger text-center"
+                                      },
+                                      [_vm._v("incomplete")]
+                                    )
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [_vm._v(_vm._s(todo.description))]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.deleteTodo(todo.id)
                                       }
-                                    },
-                                    [
-                                      _c("i", {
-                                        staticClass: "fas fa-trash-alt"
-                                      })
-                                    ]
-                                  )
-                                ])
-                              ]
-                            )
-                          })
-                        ],
-                        2
-                      )
-                    ])
-                  ]
-                )
+                                    }
+                                  },
+                                  [_c("i", { staticClass: "fas fa-trash-alt" })]
+                                )
+                              ])
+                            ]
+                          )
+                        })
+                      ],
+                      2
+                    )
+                  ])
+                ])
               ])
             ])
           ])

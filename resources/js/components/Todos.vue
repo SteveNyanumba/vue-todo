@@ -7,7 +7,7 @@
                   <div class="card px-3">
                       <div class="card-body">
                           <h4 class="card-title text-center">Todo App</h4>
-                          <div class="box-body table-responsive no-padding">
+                          <div class="box-body table-responsive">
                             <table class="table table-hover">
                                 <tbody>
                                     <tr>
