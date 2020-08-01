@@ -48226,26 +48226,28 @@ var render = function() {
                 1
               ),
               _vm._v(" "),
-              _c("li", { staticClass: "nav-item active" }, [
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-default",
-                    on: {
-                      click: function($event) {
-                        $event.preventDefault()
-                        return _vm.signout()
-                      }
-                    }
-                  },
-                  [
-                    _c("i", {
-                      staticClass: "fa fa-power-off",
-                      attrs: { "aria-hidden": "true" }
-                    })
-                  ]
-                )
-              ])
+              _vm.isLoggedIn
+                ? _c("li", { staticClass: "nav-item active" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-default",
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            return _vm.signout()
+                          }
+                        }
+                      },
+                      [
+                        _c("i", {
+                          staticClass: "fa fa-power-off",
+                          attrs: { "aria-hidden": "true" }
+                        })
+                      ]
+                    )
+                  ])
+                : _vm._e()
             ])
           ]
         )

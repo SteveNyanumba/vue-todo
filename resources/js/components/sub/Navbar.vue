@@ -12,7 +12,7 @@
           <li class="nav-item">
             <router-link class="nav-link" to="/register">Register</router-link>
           </li>
-          <li class="nav-item active">
+          <li class="nav-item active" v-if="isLoggedIn">
             <button class="btn btn-default" @click.prevent="signout()"><i class="fa fa-power-off" aria-hidden="true"></i></button>
           </li>
         </ul>
