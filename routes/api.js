@@ -17,7 +17,7 @@ const auth = (req,res,next)=>{
     if(req.headers['authorization']){
         next()
     }else {
-        return res.status(403).json({message:'You must Log in first!'})
+        return res.status(403).json({success:false, message:'You must Log in first!'})
     }
 }
 
@@ -33,12 +33,14 @@ router.post('/login', async (req,res)=>{
             })
             if(!user){
                 return res.status(404).json({
+                    success:false, 
                     message: 'User not found'
                 })
             }
             const validUser = bcrypt.compareSync(password, user.password)
             if(user && !validUser){
                 return res.status(400).json({
+                    success:false, 
                     message: 'Password is invalid'
                 })
             }
@@ -49,7 +51,7 @@ router.post('/login', async (req,res)=>{
                 email: user.email
             }
             jwt.sign(payload, APP_SECRET, {expiresIn: 1200},(err,token)=>{
-                    if (err) throw err
+                    if (err) return res.json({success:false, message: 'Failed to Log In'})
                     res.status(200).json({
                         success:true,
                         message:'Successfully logged in!',
@@ -58,7 +60,7 @@ router.post('/login', async (req,res)=>{
                     })
                 })
         } catch (error) {
-            res.status(400).json({message:'Failed to log in'})
+            res.status(400).json({success:false, message:'Failed to log in'})
             console.log(error,'logging in')
         }
         // return
@@ -70,21 +72,21 @@ router.post('/register', async (req,res)=>{
     const {username, password, email, confirmPassword} = req.body
     User.findOne({where: {username}})
     .then((usernameExists) => {
-        if (usernameExists)return res.status(400).json({message: 'Username already exists!'})
+        if (usernameExists)return res.status(400).json({success:false, message: 'Username already exists!'})
     }).catch((err) => {
         res.json({message: err}).status(400)
     });
     User.findOne({where: {email}})
     .then((emailExists) => {
-        if (emailExists)return res.status(400).json({message: 'email already exists!'})
+        if (emailExists)return res.status(400).json({success:false, message: 'email already exists!'})
     }).catch((err) => {
-        res.json({message: err}).status(400)
+        res.json({success:false, message: err}).status(400)
     });
     
-    if(username === '') return res.status(400).json({message:'Username Field is required'})
-    if(password === '') return res.status(400).json({message:'Password Field is required'})
-    if(confirmPassword === '') return res.status(400).json({message:'Please confirm your password'})
-    if (password !== confirmPassword) return res.status(400).json({message:'Passwords do not match!'})
+    if(username === '') return res.status(400).json({success:false, message:'Username Field is required'})
+    if(password === '') return res.status(400).json({success:false, message:'Password Field is required'})
+    if(confirmPassword === '') return res.status(400).json({success:false, message:'Please confirm your password'})
+    if (password !== confirmPassword) return res.status(400).json({success:false, message:'Passwords do not match!'})
     try {
         const newUser = await User.create({
             username,
@@ -98,7 +100,7 @@ router.post('/register', async (req,res)=>{
         })
         console.log(newUser)
     } catch (err) {
-        res.json({message:err}).status(400)
+        res.json({success:false, message:err}).status(400)
         console.log(err,'registering')
     }
        
@@ -116,6 +118,7 @@ router.get('/todos',auth, async(req,res)=>{
         })
         if (todos.length === 0) {
             return res.status(200).json({
+                success:true, 
                 message:'There are no todos here for you',
                 todos
             })
@@ -123,7 +126,7 @@ router.get('/todos',auth, async(req,res)=>{
             res.json({succes:true, todos})
         }
     } catch (err) {
-        res.json({message:err}).status(400)
+        res.json({success:false, message:err}).status(400)
     }
 })
     
@@ -141,7 +144,21 @@ router.post('/todos',auth, async(req,res)=>{
         })
         res.json({success:true, message:'Successfully added a new Todo!', todo}).status(200)
     } catch (err) {
-        res.json({message:err}).status(400)
+        res.json({success:false, message:err}).status(400)
+    }
+})
+
+// 
+router.put('/todos/:id',auth, async(req,res)=>{
+    try {
+        const {id} = req.params
+        const {completed} = req.body
+        const todo = await Todo.findOne({where:{id}})
+        todo.completed = completed
+        todo.update()
+        res.json({success:true, message:'Successfully added a new Todo!', todo}).status(200)
+    } catch (err) {
+        res.json({success:false, message:err}).status(400)
     }
 })
 
