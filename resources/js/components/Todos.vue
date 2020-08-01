@@ -15,8 +15,9 @@
                                         <th>Deadline</th>
                                         <th>Status</th>
                                         <th>Description</th>
+                                        <th><b>Actions</b></th>
                                     </tr>
-                                    <tr v-for="todo in allTodos" :key="todo.id">
+                                    <tr v-for="todo in allTodos" :key="todo.id" @dblclick="on2Click(todo)">
                                         <td>{{ todo.title }}</td>
                                         <td>{{ todo.deadline }}</td>
                                         <td>
@@ -24,6 +25,7 @@
                                             <span class="alert alert-danger text-center" v-else>incomplete</span>
                                         </td>
                                         <td>{{ todo.description }}</td>
+                                        <td><button @click="deleteTodo(todo.id)" class="btn"><i  class="fas fa-trash-alt"></i></button></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -55,16 +57,14 @@ computed: mapGetters(["allTodos"]),
 data(){
     return {
         
+        
     }
 },
 methods:{
     ...mapActions(["fetchTodos", "deleteTodo", "updateTodo"]),
     on2Click(todo){
-        const changeTodo = {
-            id: todo.id,
-            completed: !todo.completed
-        }
-        this.updateTodo(changeTodo)
+        todo.completed = !todo.completed
+        this.updateTodo(todo)
     }
 },
 created(){

@@ -7572,6 +7572,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
 
 
 
@@ -7587,11 +7589,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapActions"])(["fetchTodos", "deleteTodo", "updateTodo"])), {}, {
     on2Click: function on2Click(todo) {
-      var changeTodo = {
-        id: todo.id,
-        completed: !todo.completed
-      };
-      this.updateTodo(changeTodo);
+      todo.completed = !todo.completed;
+      this.updateTodo(todo);
     }
   }),
   created: function created() {
@@ -47810,33 +47809,63 @@ var render = function() {
                           _vm._m(0),
                           _vm._v(" "),
                           _vm._l(_vm.allTodos, function(todo) {
-                            return _c("tr", { key: todo.id }, [
-                              _c("td", [_vm._v(_vm._s(todo.title))]),
-                              _vm._v(" "),
-                              _c("td", [_vm._v(_vm._s(todo.deadline))]),
-                              _vm._v(" "),
-                              _c("td", [
-                                todo.completed
-                                  ? _c(
-                                      "span",
-                                      {
-                                        staticClass:
-                                          "alert alert-success text-center"
-                                      },
-                                      [_vm._v("Completed")]
-                                    )
-                                  : _c(
-                                      "span",
-                                      {
-                                        staticClass:
-                                          "alert alert-danger text-center"
-                                      },
-                                      [_vm._v("incomplete")]
-                                    )
-                              ]),
-                              _vm._v(" "),
-                              _c("td", [_vm._v(_vm._s(todo.description))])
-                            ])
+                            return _c(
+                              "tr",
+                              {
+                                key: todo.id,
+                                on: {
+                                  dblclick: function($event) {
+                                    return _vm.on2Click(todo)
+                                  }
+                                }
+                              },
+                              [
+                                _c("td", [_vm._v(_vm._s(todo.title))]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v(_vm._s(todo.deadline))]),
+                                _vm._v(" "),
+                                _c("td", [
+                                  todo.completed
+                                    ? _c(
+                                        "span",
+                                        {
+                                          staticClass:
+                                            "alert alert-success text-center"
+                                        },
+                                        [_vm._v("Completed")]
+                                      )
+                                    : _c(
+                                        "span",
+                                        {
+                                          staticClass:
+                                            "alert alert-danger text-center"
+                                        },
+                                        [_vm._v("incomplete")]
+                                      )
+                                ]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v(_vm._s(todo.description))]),
+                                _vm._v(" "),
+                                _c("td", [
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn",
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.deleteTodo(todo.id)
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c("i", {
+                                        staticClass: "fas fa-trash-alt"
+                                      })
+                                    ]
+                                  )
+                                ])
+                              ]
+                            )
                           })
                         ],
                         2
@@ -47867,7 +47896,9 @@ var staticRenderFns = [
       _vm._v(" "),
       _c("th", [_vm._v("Status")]),
       _vm._v(" "),
-      _c("th", [_vm._v("Description")])
+      _c("th", [_vm._v("Description")]),
+      _vm._v(" "),
+      _c("th", [_c("b", [_vm._v("Actions")])])
     ])
   }
 ]
@@ -65573,29 +65604,7 @@ var actions = {
       }, _callee2, null, [[1, 9]]);
     }))();
   },
-  // async updateTodo({commit},todo,id){
-  //   try {
-  //     commit('markCompleted', todo, id)
-  //     const response = await Axios.put(`/api/todos/${id}`, todo)
-  //     if(response.data.success){
-  //       Toast.fire({
-  //         icon:'success',
-  //         title:response.data.message
-  //       })
-  //     }else{
-  //       Toast.fire({
-  //         icon:'warning',
-  //         title:response.data.message
-  //       })
-  //     }
-  //   } catch (err) {
-  //     Toast.fire({
-  //       icon:'error',
-  //       title:err
-  //     })
-  //   }
-  // },
-  deleteTodo: function deleteTodo(_ref3, id) {
+  updateTodo: function updateTodo(_ref3, todo) {
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
       var commit, response;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
@@ -65604,9 +65613,9 @@ var actions = {
             case 0:
               commit = _ref3.commit;
               _context3.prev = 1;
-              commit('removeTodo', id);
+              commit('markCompleted', todo);
               _context3.next = 5;
-              return axios__WEBPACK_IMPORTED_MODULE_1___default.a["delete"]("/api/todos/".concat(id));
+              return axios__WEBPACK_IMPORTED_MODULE_1___default.a.put("/api/todos/".concat(todo.id), todo);
 
             case 5:
               response = _context3.sent;
@@ -65614,7 +65623,12 @@ var actions = {
               if (response.data.success) {
                 Toast.fire({
                   icon: 'success',
-                  message: response.data.message
+                  title: response.data.message
+                });
+              } else {
+                Toast.fire({
+                  icon: 'warning',
+                  title: 'An little error occured!'
                 });
               }
 
@@ -65636,6 +65650,48 @@ var actions = {
         }
       }, _callee3, null, [[1, 9]]);
     }))();
+  },
+  deleteTodo: function deleteTodo(_ref4, id) {
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
+      var commit, response;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              commit = _ref4.commit;
+              _context4.prev = 1;
+              commit('removeTodo', id);
+              _context4.next = 5;
+              return axios__WEBPACK_IMPORTED_MODULE_1___default.a["delete"]("/api/todos/".concat(id));
+
+            case 5:
+              response = _context4.sent;
+
+              if (response.data.success) {
+                Toast.fire({
+                  icon: 'success',
+                  message: response.data.message
+                });
+              }
+
+              _context4.next = 12;
+              break;
+
+            case 9:
+              _context4.prev = 9;
+              _context4.t0 = _context4["catch"](1);
+              Toast.fire({
+                icon: 'error',
+                title: _context4.t0
+              });
+
+            case 12:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4, null, [[1, 9]]);
+    }))();
   }
 };
 var mutations = {
@@ -65649,10 +65705,16 @@ var mutations = {
     state.todos = state.todos.filter(function (todo) {
       return todo.id !== id;
     });
-  } // markCompleted(todo){
-  //   !todo.completed
-  // }
+  },
+  markCompleted: function markCompleted(state, update) {
+    var index = state.todos.findIndex(function (todo) {
+      return todo.id === update.id;
+    });
 
+    if (index !== -1) {
+      state.todos.splice(index, 1, update);
+    }
+  }
 };
 /* harmony default export */ __webpack_exports__["default"] = ({
   state: state,

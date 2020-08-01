@@ -41,28 +41,28 @@ const actions = {
       })
     }
   },
-  // async updateTodo({commit},todo,id){
-  //   try {
-  //     commit('markCompleted', todo, id)
-  //     const response = await Axios.put(`/api/todos/${id}`, todo)
-  //     if(response.data.success){
-  //       Toast.fire({
-  //         icon:'success',
-  //         title:response.data.message
-  //       })
-  //     }else{
-  //       Toast.fire({
-  //         icon:'warning',
-  //         title:response.data.message
-  //       })
-  //     }
-  //   } catch (err) {
-  //     Toast.fire({
-  //       icon:'error',
-  //       title:err
-  //     })
-  //   }
-  // },
+  async updateTodo({commit}, todo){
+    try {
+      commit('markCompleted', todo)
+      const response = await Axios.put(`/api/todos/${todo.id}`, todo)
+      if(response.data.success){
+        Toast.fire({
+          icon:'success',
+          title:response.data.message
+        })
+      }else{
+        Toast.fire({
+          icon:'warning',
+          title:'An little error occured!'
+        })
+      }
+    } catch (err) {
+      Toast.fire({
+        icon:'error',
+        title:err
+      })
+    }
+  },
   async deleteTodo({ commit }, id) {
     try {
       commit('removeTodo', id);
@@ -92,9 +92,12 @@ const mutations = {
   removeTodo(state, id){
       state.todos = state.todos.filter(todo => todo.id !== id)
   },
-  // markCompleted(todo){
-  //   !todo.completed
-  // }
+  markCompleted(state, update){
+    const index = state.todos.findIndex(todo=>todo.id === update.id)
+    if (index !== -1){
+      state.todos.splice(index, 1, update)
+    }
+  }
 };
 
 export default {

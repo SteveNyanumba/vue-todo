@@ -154,11 +154,13 @@ router.put('/todos/:id',auth, async(req,res)=>{
         const {id} = req.params
         const {completed} = req.body
         const todo = await Todo.findOne({where:{id}})
+        console.log(id)
         todo.completed = completed
-        todo.update()
-        res.json({success:true, message:'Successfully added a new Todo!', todo}).status(200)
+        todo.save()
+        res.json({success:true, message:'Successfully updated a Todo!', todo}).status(200)
     } catch (err) {
         res.json({success:false, message:err}).status(400)
+        console.log(err);
     }
 })
 
