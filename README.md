@@ -4,7 +4,8 @@
 
 
 
-This is a show case application using express js on the backend and vue JS on the frontend.
+This is a show case Todo application using express js on the backend and vue JS on the frontend.
+
 
 ## How To Deploy
 
@@ -23,34 +24,42 @@ after that the variables include:
 - DB_CONNECTION - *value should be a string of the database connection URL*
 - APP_SECRET - *value should be a string of any value of your choosing*
 
+```js
+// Example for .env file
+
+NODE_ENV=development
+DB_CONNECTION=mysql://root@localhost:3306/todoapp
+PORT=5000
+APP_SECRET=Justasecret
+
+
+
+```
+
 after this setup you may run either
 ```git
 
-npm install 
+$ npm install 
 
 ```
-    ALTERNATIVELY...
-
-```git
-
-npm i
-
-```
+ 
 either of the two commands will install the dependancies as per found in the *package.json*
 
 to start the server and compile the frontend files, run in two terminals:
 
 ```git
+# start the server
 
-npm start
+$ npm start
 
 ```
 
     AND
 
 ```git
+# compile frontend
 
-npm run dev
+$ npm run dev
 
 ```
 
@@ -64,7 +73,7 @@ The only differences with setting it up for development and production are that 
 to compile and minify the frontend files run:
 ```git
 
-npm run prod
+$ npm run prod
 
 ```
 
@@ -84,8 +93,10 @@ this will instruct Webpack to minify the stylesheets and scripts used for the fr
 
 - Vue *with Vuex*
 - Laravel MIX webpack wrapper
-- Bootstrap 4.5
+- Bootstrap 4
 - Fontawesome 5
-- SASS
 - Sweetalert
+
+## DATABASE
+- MySQL *through XAMPP*
 
