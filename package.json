@@ -47,7 +47,7 @@
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^2.2.0",
     "laravel-mix": "^5.0.4",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "morgan": "^1.10.0",
     "mysql2": "^2.1.0",
     "passport": "^0.4.1",
